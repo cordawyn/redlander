@@ -1,3 +1,6 @@
+$:.unshift(File.dirname(__FILE__)) unless
+  $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+
 require 'spec/rake/spectask'
 require 'rake/gempackagetask'
 require 'lib/redlander/version'
@@ -25,6 +28,9 @@ spec = Gem::Specification.new do |s|
   s.test_files  = Dir.glob('spec/**/*')
 
   s.extensions  = ["ext/extconf.rb"]
+
+  # s.add_dependency("redland", "~> 1.0")
+  s.add_development_dependency("rspec", "~> 1")
 
   # s.extra_rdoc_files = ['README.rdoc', 'History.txt', 'LICENSE', 'Manifest.txt']
   s.has_rdoc = false
