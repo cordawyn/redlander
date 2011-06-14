@@ -1,0 +1,9 @@
+ext/*.o
+ext/*.so
+ext/*.bundle
+ext/Makefile
+lib/*.o
+lib/*.so
+lib/*.bundle
+pkg/
+tmtags
