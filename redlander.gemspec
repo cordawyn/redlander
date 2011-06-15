@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.extensions  = ["ext/extconf.rb"]
 
   # s.add_dependency("redland", "~> 1.0")
+  s.add_dependency("xml_schema", "0.0.1")
   s.add_development_dependency("rspec", "~> 1")
 
   s.extra_rdoc_files = ['README']
