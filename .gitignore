@@ -9,3 +9,5 @@ lib/*.so
 lib/*.bundle
 pkg/
 tmtags
+*.gem
+TAGS
