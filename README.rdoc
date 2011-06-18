@@ -44,6 +44,8 @@ Finding statements:
     puts statement.subject
   }
 
+Note the difference between "find(:all)" and "all" methods: the former is "lazy" (so it is possible to run sub-queries on its output), while the latter is not.
+
 For more detail refer to the documentation of Model, Statement, Storage and other classes of Redlander.
 
 = Exceptions

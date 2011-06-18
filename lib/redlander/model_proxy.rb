@@ -57,6 +57,8 @@ module Redlander
     # Scope can be:
     #   :all
     #   :first
+    # Note that find(:all) is "lazy", it doesn't instantiate all statements at once,
+    # which makes it useable to get "chained" queries.
     def find(scope, options = {}, &block)
       statement = Statement.new(options)
       rdf_stream = Redland.librdf_model_find_statements(@model.rdf_model, statement.rdf_statement)
@@ -76,6 +78,7 @@ module Redlander
       end
     end
 
+    # Similar to "find(:all)" except it is not "lazy".
     def all(options = {})
       [].tap do |st|
         find(:all, options) do |fs|
