@@ -57,7 +57,7 @@ module Redlander
     # Scope can be:
     #   :all
     #   :first
-    def find(scope, options = {}, &block)
+    def find(scope, options = {})
       statement = Statement.new(options)
       rdf_stream = Redland.librdf_model_find_statements(@model.rdf_model, statement.rdf_statement)
       proxy = self.class.new(@model, rdf_stream)
@@ -67,7 +67,7 @@ module Redlander
         proxy.first
       when :all
         if block_given?
-          proxy.each(&block)
+          proxy.each
         else
           # oh?
           proxy.map(&:dup)
