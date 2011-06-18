@@ -1,0 +1,59 @@
+= Description
+
+Redlander is Ruby bindings to Redland library (see http://librdf.org). This is an alternative implementation of the bindings, aiming to be more intuitive, lightweight and less buggy.
+
+= Installing
+
+Installing Redlander is simple:
+
+  $ gem install redlander
+
+Note, that in order to install Redlander you need the development libraries of Redland project (tested with redland-1.0.12 in Ubuntu 11.04).
+
+= Usage
+
+To start doing anything with Redland, you need to initialize a model first:
+
+  $ m = Redlander::Model.new
+
+This creates a model where all RDF statements are stored in the memory. Depending on the selected storage you may need to supply extra parameters like :user or :password. Look-up the options for Storage.initialize_storage method for the list of storage options.
+
+Now that you have created a model, you can access its RDF statements:
+
+  $ m.statements
+
+Most of Redlander functionality is accessable via these statements. The API is almost identical to ActiveRecord:
+
+  $ s = URI.parse('http://example.com/concepts#subject')
+  $ p = URI.parse('http://example.com/concepts#label')
+  $ o = "subject!"
+  $ m.statements.create(:subject => s, :predicate => p, :object => o)
+
+  $ m.statements.empty?  # => false
+
+  $ st = Redlander::Statement.new(:subject => s, :predicate => p, :object => "another label")
+  $ m.statements.add(st)
+
+  m.statements.size    # => 2
+
+Finding statements:
+
+  m.statements.find(:first, :object => "subject!")
+  m.statements.all(:object => "another label")
+  m.statements.find(:all, :object => "subject!") { |statement|
+    puts statement.subject
+  }
+
+For more detail refer to the documentation of Model, Statement, Storage and other classes of Redlander.
+
+= Exceptions
+
+If anything unexpected happens, Redlander raises RedlandError.
+
+= Authors
+
+Slava Kravchenko <slava.kravchenko@gmail.com>
+
+= Thanks
+
+Thanks goes to Dave Beckett, the creator of Redland!
