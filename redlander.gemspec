@@ -29,6 +29,6 @@ Gem::Specification.new do |s|
   s.add_dependency("xml_schema", "0.0.1")
   s.add_development_dependency("rspec", "~> 1")
 
-  s.extra_rdoc_files = ['README']
+  s.extra_rdoc_files = ['README.rdoc']
   s.has_rdoc = false
 end
