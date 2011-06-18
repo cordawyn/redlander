@@ -77,7 +77,11 @@ module Redlander
     end
 
     def all(options = {})
-      find(:all, options)
+      [].tap do |st|
+        find(:all, options) do |fs|
+          st << fs
+        end
+      end
     end
 
   end

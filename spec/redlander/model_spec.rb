@@ -52,7 +52,6 @@ describe Model do
       statement = @model.statements.create(statement_attributes)
       @model.statements.find(:first).should eql(statement)
       @model.statements.first.should eql(statement)
-      @model.statements.find(:all).should eql([statement])
       @model.statements.all.should eql([statement])
     end
 
