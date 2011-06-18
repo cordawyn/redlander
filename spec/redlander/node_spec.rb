@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), "..", "spec_helper")
+require "spec_helper"
 
 require 'date'
 
@@ -61,7 +61,7 @@ describe Node do
 
   it "should have proper string representation" do
     node = Node.new("Bye-bye, cruel world...")
-    node.to_s.should eql("Bye-bye, cruel world...^^<http://www.w3.org/2001/XMLSchema#string>")
+    node.to_s.should eql('"Bye-bye, cruel world..."^^<http://www.w3.org/2001/XMLSchema#string>')
   end
 
   it "should have a proper value for a literal node" do
