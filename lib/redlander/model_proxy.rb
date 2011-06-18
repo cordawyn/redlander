@@ -69,8 +69,7 @@ module Redlander
         if block_given?
           proxy.each
         else
-          # oh?
-          proxy.map(&:dup)
+          proxy
         end
       else
         raise RedlandError.new("Invalid search scope '#{scope}' specified.")
