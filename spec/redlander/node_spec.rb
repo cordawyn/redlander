@@ -74,7 +74,7 @@ describe Node do
 
   it "should have a blank identifier for a blank node" do
     node = Node.new
-    node.value.should match(/^\(\w+\)$/)
+    node.value.should match(/^_:\w+$/)
   end
 
   it "should have an instance of URI for a resource node" do
