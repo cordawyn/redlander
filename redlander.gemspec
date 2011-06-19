@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   files = Dir.glob('lib/redlander/**/*')
   files += Dir.glob('spec/**/*')
   files += Dir.glob('tasks/**/*')
-  files += %w[ext/extconf.rb ext/redland-pre.i ext/redland-types.i ext/redland_wrap.c ext/README]
   files += %w[Rakefile lib/redlander.rb]
   s.files       = files
   s.test_files  = Dir.glob('spec/**/*')
@@ -27,6 +26,7 @@ Gem::Specification.new do |s|
 
   # s.add_dependency("redland", "~> 1.0")
   s.add_dependency("xml_schema", "0.0.1")
+  s.add_dependency("ffi", "~> 1.0")
   s.add_development_dependency("rspec", "~> 1")
 
   s.extra_rdoc_files = ['README.rdoc']
