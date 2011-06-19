@@ -27,8 +27,8 @@ module Redlander
                     Redland.librdf_new_node_from_node(arg.rdf_node)
                   else
                     value = arg.respond_to?(:xmlschema) ? arg.xmlschema : arg.to_s
-                    datatype = Redlander.to_rdf_uri(XmlSchema.datatype_of(arg))
-                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, datatype)
+                    datatype = Uri.new(XmlSchema.datatype_of(arg))
+                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, datatype.rdf_uri)
                   end
 
       raise RedlandError.new("Failed to create a new node") if @rdf_node.null?

@@ -19,7 +19,7 @@ module Redlander
     # Options are:
     #   :base_uri   base URI (String or URI)
     def to_string(model, options = {})
-      Redland.librdf_serializer_serialize_model_to_string(@rdf_serializer, Redlander.to_rdf_uri(options[:base_uri]), model.rdf_model)
+      Redland.librdf_serializer_serialize_model_to_string(@rdf_serializer, Uri.new(options[:base_uri]).rdf_uri, model.rdf_model)
     end
 
     # Serializes a model and stores it in a file
@@ -31,7 +31,7 @@ module Redlander
     #
     # Returns true on success, or false.
     def to_file(model, filename, options = {})
-      Redland.librdf_serializer_serialize_model_to_file(@rdf_serializer, filename, Redlander.to_rdf_uri(options[:base_uri]), model.rdf_model).zero?
+      Redland.librdf_serializer_serialize_model_to_file(@rdf_serializer, filename, Uri.new(options[:base_uri]).rdf_uri, model.rdf_model).zero?
     end
 
   end

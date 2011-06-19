@@ -7,6 +7,7 @@ module Redlander
 
     # Iterate over statements in the stream.
     def each
+      # FIXME: Must reinitialize the stream here!
       # TODO: The options specify matching criteria: subj, pred, obj;
       #   if an option is not specified, it matches any value,
       #   so with no options given, all statements will be returned.

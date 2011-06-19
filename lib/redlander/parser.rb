@@ -28,7 +28,7 @@ module Redlander
     def from_string(model, content, options = {})
       # FIXME: A bug (?) in Redland breaks NTriples parser if its input is not terminated with "\n"
       content.concat("\n") unless content.end_with?("\n")
-      Redland.librdf_parser_parse_string_into_model(@rdf_parser, content, Redlander.to_rdf_uri(options[:base_uri]), model.rdf_model).zero?
+      Redland.librdf_parser_parse_string_into_model(@rdf_parser, content, Uri.new(options[:base_uri]).rdf_uri, model.rdf_model).zero?
     end
 
     # Parse the content from URI into the model.
@@ -41,7 +41,7 @@ module Redlander
     def from_uri(model, uri, options = {})
       uri = URI.parse(uri)
       uri = URI.parse("file://#{File.expand_path(uri.to_s)}") if uri.scheme.nil?
-      Redland.librdf_parser_parse_into_model(@rdf_parser, Redlander.to_rdf_uri(uri), Redlander.to_rdf_uri(options[:base_uri]), model.rdf_model).zero?
+      Redland.librdf_parser_parse_into_model(@rdf_parser, Uri.new(uri).rdf_uri, Redlander.to_rdf_uri(options[:base_uri]), model.rdf_model).zero?
     end
     alias_method :from_file, :from_uri
 
