@@ -19,7 +19,7 @@ module Redlander
                     Redland.librdf_new_node_from_blank_identifier(Redlander.rdf_world, nil)
                   elsif arg.is_a?(URI)
                     Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, arg.to_s)
-                  elsif arg.is_a?(SWIG::TYPE_p_librdf_node_s)
+                  elsif arg.is_a?(FFI::Pointer)
                     # A special case, where you can pass an instance of SWIG::TYPE_p_librdf_node_s
                     # in order to create a Node from an internal RDF node representation.
                     arg
@@ -31,7 +31,7 @@ module Redlander
                     Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, datatype)
                   end
 
-      raise RedlandError.new("Failed to create a new node") unless @rdf_node
+      raise RedlandError.new("Failed to create a new node") if @rdf_node.null?
       ObjectSpace.define_finalizer(@rdf_node, proc { Redland.librdf_free_node(@rdf_node) })
     end
 
@@ -52,7 +52,8 @@ module Redlander
     # Return the datatype URI of the node.
     # Returns nil if the node is not a literal, or has no datatype URI.
     def datatype
-      if rdf_uri = Redland.librdf_node_get_literal_value_datatype_uri(@rdf_node)
+      rdf_uri = Redland.librdf_node_get_literal_value_datatype_uri(@rdf_node)
+      unless rdf_uri.null?
         ObjectSpace.define_finalizer(rdf_uri, proc { Redland.librdf_free_uri(rdf_uri) })
         Redland.librdf_uri_to_string(rdf_uri)
       end
@@ -76,7 +77,8 @@ module Redlander
     # Value of the literal node as a Ruby object instance.
     def value
       if resource?
-        if rdf_uri = Redland.librdf_node_get_uri(@rdf_node)
+        rdf_uri = Redland.librdf_node_get_uri(@rdf_node)
+        unless rdf_uri.null?
           ObjectSpace.define_finalizer(rdf_uri, proc { Redland.librdf_free_uri(rdf_uri) })
           URI.parse(Redland.librdf_uri_to_string(rdf_uri))
         end

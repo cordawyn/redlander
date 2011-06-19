@@ -10,7 +10,7 @@ module Redlander
     # because the rest seem to be very buggy.
     def initialize(name = :rdfxml)
       @rdf_serializer = Redland.librdf_new_serializer(Redlander.rdf_world, name.to_s, nil, nil)
-      raise RedlandError.new("Failed to create a new serializer") unless @rdf_serializer
+      raise RedlandError.new("Failed to create a new serializer") if @rdf_serializer.null?
       ObjectSpace.define_finalizer(@rdf_serializer, proc { Redland.librdf_free_serializer(@rdf_serializer) })
     end
 

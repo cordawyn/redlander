@@ -40,10 +40,10 @@ module Redlander
       end
 
       rdf_storage = Redland.librdf_new_storage(Redlander.rdf_world,
-                                           storage_type.to_s,
-                                           storage_options.delete(:name).to_s,
-                                           Redlander.to_rdf_options(storage_options))
-      raise RedlandError.new("Failed to initialize storage") unless rdf_storage
+                                               storage_type.to_s,
+                                               storage_options.delete(:name).to_s,
+                                               Redlander.to_rdf_options(storage_options))
+      raise RedlandError.new("Failed to initialize storage") if rdf_storage.null?
       ObjectSpace.define_finalizer(rdf_storage, proc { Redland.librdf_free_storage(rdf_storage) })
 
       rdf_storage
@@ -52,12 +52,15 @@ module Redlander
     # Wrap changes to the given model in a transaction.
     # If an exception is raised in the block, the transaction is rolled back.
     # (Does not work for all storages, in which case the changes are instanteous).
-    def self.transaction(model, &block)
-      Redland.librdf_model_transaction_start(model.rdf_model).zero? || RedlandError.new("Failed to initialize a transaction")
-      block.call
-      Redland.librdf_model_transaction_commit(model.rdf_model).zero? || RedlandError.new("Failed to commit the transaction")
+    def self.transaction(model)
+      if block_given?
+        Redland.librdf_model_transaction_start(model.rdf_model).zero? || RedlandError.new("Failed to initialize a transaction")
+        yield
+        Redland.librdf_model_transaction_commit(model.rdf_model).zero? || RedlandError.new("Failed to commit the transaction")
+      end
     rescue
       rollback(model)
+      raise
     end
 
     # Rollback a latest transaction for the given model.

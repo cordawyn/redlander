@@ -15,7 +15,7 @@ module Redlander
     def initialize(name = :rdfxml)
       # name, mime-type and syntax uri can all be nil, which defaults to :rdfxml parser
       @rdf_parser = Redland.librdf_new_parser(Redlander.rdf_world, name.to_s, nil, nil)
-      raise RedlandError.new("Failed to create a new parser") unless @rdf_parser
+      raise RedlandError.new("Failed to create a new parser") if @rdf_parser.null?
       ObjectSpace.define_finalizer(@rdf_parser, proc { Redland.librdf_free_parser(@rdf_parser) })
     end
 

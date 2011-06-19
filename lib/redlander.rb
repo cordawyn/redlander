@@ -15,7 +15,7 @@ module Redlander
     def rdf_world
       unless @rdf_world
         @rdf_world = Redland.librdf_new_world
-        raise RedlandError.new("Could not create a new RDF world") unless @rdf_world
+        raise RedlandError.new("Could not create a new RDF world") if @rdf_world.null?
         ObjectSpace.define_finalizer(@rdf_world, proc { Redland.librdf_free_world(@rdf_world) })
         Redland.librdf_world_open(@rdf_world)
       end
@@ -45,7 +45,7 @@ module Redlander
       return nil if uri.nil?
       uri = uri.is_a?(URI) ? uri.to_s : uri
       rdf_uri = Redland.librdf_new_uri(rdf_world, uri)
-      raise RedlandError.new("Failed to create URI from '#{uri}'") unless rdf_uri
+      raise RedlandError.new("Failed to create URI from '#{uri}'") if rdf_uri.null?
       ObjectSpace.define_finalizer(rdf_uri, proc { Redland.librdf_free_uri(rdf_uri) })
       rdf_uri
     end

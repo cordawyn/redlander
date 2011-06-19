@@ -13,7 +13,7 @@ module Redlander
                     else
                       Redland.librdf_model_as_stream(@model.rdf_model)
                     end
-      raise RedlandError.new("Failed to create a new stream") unless @rdf_stream
+      raise RedlandError.new("Failed to create a new stream") if @rdf_stream.null?
       ObjectSpace.define_finalizer(@rdf_stream, proc { Redland.librdf_free_stream(@rdf_stream) })
     end
 

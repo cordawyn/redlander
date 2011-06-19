@@ -12,7 +12,7 @@ module Redlander
     #   :predicate
     #   :object
     def initialize(options = {})
-      @rdf_statement = if options.is_a?(SWIG::TYPE_p_librdf_statement_s)
+      @rdf_statement = if options.is_a?(FFI::Pointer)
                          # A special case, where you can pass an instance of SWIG::TYPE_p_librdf_statement_s
                          # in order to create a Statement from an internal RDF statement representation.
                          options
@@ -23,23 +23,23 @@ module Redlander
                          Redland.librdf_new_statement_from_nodes(Redlander.rdf_world, s, p, o)
                        end
 
-      raise RedlandError.new("Failed to create a new statement") unless @rdf_statement
+      raise RedlandError.new("Failed to create a new statement") if @rdf_statement.null?
       ObjectSpace.define_finalizer(@rdf_statement, proc { Redland.librdf_free_statement(@rdf_statement) })
     end
 
     def subject
       rdf_node = Redland.librdf_statement_get_subject(@rdf_statement)
-      rdf_node && Node.new(rdf_node)
+      rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
     def predicate
       rdf_node = Redland.librdf_statement_get_predicate(@rdf_statement)
-      rdf_node && Node.new(rdf_node)
+      rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
     def object
       rdf_node = Redland.librdf_statement_get_object(@rdf_statement)
-      rdf_node && Node.new(rdf_node)
+      rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
     # set the subject of the statement

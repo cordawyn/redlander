@@ -16,7 +16,7 @@ module Redlander
       @rdf_storage = Storage.initialize_storage(options)
 
       @rdf_model = Redland.librdf_new_model(Redlander.rdf_world, @rdf_storage, "")
-      raise RedlandError.new("Failed to create a new model") unless @rdf_model
+      raise RedlandError.new("Failed to create a new model") if @rdf_model.null?
       ObjectSpace.define_finalizer(@rdf_model, proc { Redland.librdf_free_model(@rdf_model) })
     end
 
