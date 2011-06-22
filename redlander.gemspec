@@ -22,8 +22,6 @@ Gem::Specification.new do |s|
   s.files       = files
   s.test_files  = Dir.glob('spec/**/*')
 
-  s.extensions  = ["ext/extconf.rb"]
-
   # s.add_dependency("redland", "~> 1.0")
   s.add_dependency("xml_schema", "0.0.1")
   s.add_dependency("ffi", "~> 1.0")
