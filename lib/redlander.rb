@@ -10,6 +10,21 @@ module Redlander
 
   class RedlandError < RuntimeError; end
 
+  autoload :ErrorContainer, 'redlander/error_container'
+  autoload :Uri, 'redlander/uri'
+  autoload :Parser, 'redlander/parser'
+  autoload :ParserProxy, 'redlander/parser_proxy'
+  autoload :Serializer, 'redlander/serializer'
+  autoload :Model, 'redlander/model'
+  autoload :ModelProxy, 'redlander/model_proxy'
+  autoload :Node, 'redlander/node'
+  autoload :Stream, 'redlander/stream'
+  autoload :Storage, 'redlander/storage'
+  autoload :ParsingInstanceMethods, 'redlander/parser'
+  autoload :SerializingInstanceMethods, 'redlander/serializer'
+  autoload :StreamEnumerator, 'redlander/stream_enumerator'
+  autoload :Statement, 'redlander/statement'
+
   class << self
     def rdf_world
       unless @rdf_world
@@ -38,11 +53,4 @@ module Redlander
       }.join(',')
     end
   end
-
-  require 'redlander/error_container'
-  require 'redlander/statement_iterator'
-  require 'redlander/parser'
-  require 'redlander/serializer'
-  require 'redlander/model'
-  require 'redlander/node'
 end

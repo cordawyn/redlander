@@ -35,15 +35,6 @@ describe Statement do
     create_statement.should be_valid
   end
 
-  it "should be added to the model" do
-    model = Model.new
-    statement = create_statement
-    lambda {
-      statement.model = model
-    }.should change(model.statements, :size).by(1)
-    statement.model.should be(model)
-  end
-
   [:subject, :predicate, :object].each do |attribute|
     it "should be assigned a #{attribute}" do
       statement = Statement.new

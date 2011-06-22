@@ -3,7 +3,7 @@ require "ffi"
 
 module Redland
   extend FFI::Library
-  ffi_lib "rdf"
+  ffi_lib "rdf.so.0"
 
   # World
   attach_function :librdf_new_world, [], :pointer

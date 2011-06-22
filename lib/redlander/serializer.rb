@@ -1,7 +1,5 @@
 module Redlander
-
   class Serializer
-
     # Create a new serializer.
     # Name can be either of [:rdfxml, :ntriples, :turtle, :json, :dot],
     # or nil, which defaults to :rdfxml.
@@ -11,7 +9,7 @@ module Redlander
     def initialize(name = :rdfxml)
       @rdf_serializer = Redland.librdf_new_serializer(Redlander.rdf_world, name.to_s, nil, nil)
       raise RedlandError.new("Failed to create a new serializer") if @rdf_serializer.null?
-      ObjectSpace.define_finalizer(@rdf_serializer, proc { Redland.librdf_free_serializer(@rdf_serializer) })
+      ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_serializer(@rdf_serializer) })
     end
 
     # Serialize a model into a string.
@@ -19,7 +17,12 @@ module Redlander
     # Options are:
     #   :base_uri   base URI (String or URI)
     def to_string(model, options = {})
-      Redland.librdf_serializer_serialize_model_to_string(@rdf_serializer, Uri.new(options[:base_uri]).rdf_uri, model.rdf_model)
+      base_uri = if options.has_key?(:base_uri)
+                   Uri.new(options[:base_uri]).rdf_uri
+                 else
+                   nil
+                 end
+      Redland.librdf_serializer_serialize_model_to_string(@rdf_serializer, base_uri, model.rdf_model)
     end
 
     # Serializes a model and stores it in a file
@@ -31,14 +34,18 @@ module Redlander
     #
     # Returns true on success, or false.
     def to_file(model, filename, options = {})
-      Redland.librdf_serializer_serialize_model_to_file(@rdf_serializer, filename, Uri.new(options[:base_uri]).rdf_uri, model.rdf_model).zero?
+      base_uri = if options.has_key?(:base_uri)
+                   Uri.new(options[:base_uri]).rdf_uri
+                 else
+                   nil
+                 end
+      Redland.librdf_serializer_serialize_model_to_file(@rdf_serializer, filename, base_uri, model.rdf_model).zero?
     end
-
   end
 
 
+  # Applied to Model
   module SerializingInstanceMethods
-
     def to_rdfxml(options = {})
       serializer = Serializer.new(:rdfxml)
       serializer.to_string(self, options)
@@ -74,7 +81,5 @@ module Redlander
       serializer = Serializer.new(serializer_options.delete(:format) || :rdfxml)
       serializer.to_file(self, filename, serializer_options)
     end
-
   end
-
 end

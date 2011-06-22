@@ -22,11 +22,6 @@ describe Model do
       }.should change(@model.statements, :size).by(1)
     end
 
-    it "should be bound to the model" do
-      statement = @model.statements.create(statement_attributes)
-      statement.model.should be(@model)
-    end
-
     it "should be iterated over" do
       statement = @model.statements.create(statement_attributes)
       statements = []
@@ -41,10 +36,8 @@ describe Model do
     it "should be added to the model" do
       statement = Statement.new(statement_attributes)
       lambda {
-        lambda {
-          @model.statements.add(statement)
-        }.should change(@model.statements, :size).by(1)
-      }.should change(statement, :model).from(nil).to(@model)
+        @model.statements.add(statement)
+      }.should change(@model.statements, :size).by(1)
       @model.statements.should include(statement)
     end
 
@@ -59,7 +52,7 @@ describe Model do
       statements = []
       statement = @model.statements.create(statement_attributes)
       lambda {
-        @model.statements.find(:all) do |st|
+        @model.statements.each do |st|
           statements << st
         end
       }.should change(statements, :size).by(1)
@@ -70,7 +63,7 @@ describe Model do
       statements = []
       statement = @model.statements.create(statement_attributes)
       lambda {
-        @model.statements.find(:all, :object => statement.object) do |st|
+        @model.statements.find(:all, :object => statement.object).each do |st|
           statements << st
         end
       }.should change(statements, :size).by(1)
@@ -81,7 +74,7 @@ describe Model do
       statements = []
       statement = @model.statements.create(statement_attributes)
       lambda {
-        @model.statements.find(:all, :object => "another object") do |st|
+        @model.statements.find(:all, :object => "another object").each do |st|
           statements << st
         end
       }.should_not change(statements, :size)
@@ -90,10 +83,9 @@ describe Model do
     it "should be removed from the model" do
       statement = @model.statements.create(statement_attributes)
       lambda {
-        statement.destroy
+        @model.statements.delete(statement)
       }.should change(@model.statements, :size).by(-1)
       @model.statements.should_not include(statement)
-      statement.model.should be_nil
     end
 
 

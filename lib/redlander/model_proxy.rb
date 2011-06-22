@@ -1,21 +1,9 @@
-require 'redlander/statement'
-
 module Redlander
-
   class ModelProxy
-
-    include Enumerable
+    include StreamEnumerator
 
     def initialize(model)
       @model = model
-    end
-
-    def each(&block)
-      if block_given?
-        yield iterate(initialize_model_stream, &block)
-      else
-        raise ::LocalJumpError.new("no block given")
-      end
     end
 
     # Add a statement to the model.
@@ -25,7 +13,31 @@ module Redlander
     #
     # Returns true on success or false on failure.
     def add(statement)
-      statement.model = @model
+      if statement.valid?
+        Redland.librdf_model_add_statement(@model.rdf_model, statement.rdf_statement).zero?
+      end
+    end
+
+    # Delete a statement from the model,
+    # or delete all statements matching the given criteria.
+    # Source can be either
+    #   Statement
+    # or
+    #   Hash (all keys are optional)
+    #     :subject
+    #     :predicate
+    #     :object
+    def delete(source)
+      statement = case source
+                  when Statement
+                    source
+                  when Hash
+                    Statement.new(source)
+                  else
+                    # TODO
+                    raise NotImplementedError.new
+                  end
+      Redland.librdf_model_remove_statement(@model.rdf_model, statement.rdf_statement).zero?
     end
 
     # Create a statement and add it to the model.
@@ -58,54 +70,32 @@ module Redlander
     # Scope can be:
     #   :all
     #   :first
-    # Note that find(:all) is "lazy", it doesn't instantiate all statements at once,
-    # which makes it useable to get "chained" queries.
     def find(scope, options = {}, &block)
-      statement = Statement.new(options)
-      rdf_stream = Redland.librdf_model_find_statements(@model.rdf_model, statement.rdf_statement)
-      ObjectSpace.define_finalizer(rdf_stream, proc {|id| puts "Destroying #{id}"; Redland.librdf_free_stream(rdf_stream) })
+      stream = Stream.new(@model, Statement.new(options))
 
       case scope
       when :first
-        first
+        stream.current
       when :all
-        if block_given?
-          yield iterate(rdf_stream)
-        else
-          # TODO
-          # all
-        end
+        stream.tail
       else
         raise RedlandError.new("Invalid search scope '#{scope}' specified.")
       end
     end
 
+    def first(options = {})
+      find(:first, options)
+    end
+
+    def all(options = {})
+      find(:all, options)
+    end
+
 
     private
 
-    def iterate(rdf_stream)
-      while Redland.librdf_stream_end(rdf_stream).zero?
-        yield current(rdf_stream)
-        Redland.librdf_stream_next(rdf_stream).zero?
-      end
+    def reset_stream
+      @stream = Stream.new(@model)
     end
-
-    def initialize_model_stream
-      rdf_stream = Redland.librdf_model_as_stream(@model.rdf_model)
-      raise RedlandError.new("Failed to create a new stream") if rdf_stream.null?
-      ObjectSpace.define_finalizer(rdf_stream, proc { Redland.librdf_free_stream(rdf_stream) })
-      rdf_stream
-    end
-
-    # Get the current Statement in the stream.
-    def current(rdf_stream)
-      rdf_statement = Redland.librdf_stream_get_object(rdf_stream)
-      statement = Statement.new(rdf_statement)
-      # not using Statement#model= in order to avoid re-adding the statement to the model
-      statement.instance_variable_set(:@model, @model)
-      statement
-    end
-
   end
-
 end

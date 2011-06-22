@@ -1,8 +1,8 @@
 module Redlander
-
-  module Storage
-
+  class Storage
     VALID_STORAGE_TYPES = [:memory, :hashes, :file, :uri, :tstore, :mysql, :sqlite, :postgresql]
+
+    attr_reader :rdf_storage
 
     # Creates a store of the given type
     #
@@ -31,52 +31,27 @@ module Redlander
     #
     # NOTE: When dealing with databases,
     # Redland (1.0.7) just crashes when the required tables aren't available!
-    def self.initialize_storage(options = {})
-      storage_type, storage_options = split_options(options)
-      storage_type ||= :memory
+    def initialize(options = {})
+      storage_type, storage_options = split_options(options.dup)
 
       unless VALID_STORAGE_TYPES.include?(storage_type)
         raise RedlandError.new("Unknown storage type: #{storage_type}")
       end
 
-      rdf_storage = Redland.librdf_new_storage(Redlander.rdf_world,
-                                               storage_type.to_s,
-                                               storage_options.delete(:name).to_s,
-                                               Redlander.to_rdf_options(storage_options))
-      raise RedlandError.new("Failed to initialize storage") if rdf_storage.null?
-      ObjectSpace.define_finalizer(rdf_storage, proc { Redland.librdf_free_storage(rdf_storage) })
-
-      rdf_storage
-    end
-
-    # Wrap changes to the given model in a transaction.
-    # If an exception is raised in the block, the transaction is rolled back.
-    # (Does not work for all storages, in which case the changes are instanteous).
-    def self.transaction(model)
-      if block_given?
-        Redland.librdf_model_transaction_start(model.rdf_model).zero? || RedlandError.new("Failed to initialize a transaction")
-        yield
-        Redland.librdf_model_transaction_commit(model.rdf_model).zero? || RedlandError.new("Failed to commit the transaction")
-      end
-    rescue
-      rollback(model)
-      raise
-    end
-
-    # Rollback a latest transaction for the given model.
-    def self.rollback(model)
-      Redland.librdf_model_transaction_rollback(model.rdf_model).zero? || RedlandError.new("Failed to rollback the latest transaction")
+      @rdf_storage = Redland.librdf_new_storage(Redlander.rdf_world,
+                                                storage_type.to_s,
+                                                storage_options.delete(:name).to_s,
+                                                Redlander.to_rdf_options(storage_options))
+      raise RedlandError.new("Failed to initialize storage") if @rdf_storage.null?
+      ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_storage(@rdf_storage) })
     end
 
 
     private
 
-    def self.split_options(options = {})
-      storage_options = options.dup
-      storage_type = storage_options.delete(:storage)
-      [storage_type, storage_options]
+    def split_options(options)
+      storage_type = options.delete(:storage) || :memory
+      [storage_type, options]
     end
-
   end
-
 end
