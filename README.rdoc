@@ -8,7 +8,7 @@ Installing Redlander is simple:
 
   $ gem install redlander
 
-Note, that in order to install Redlander you need the development libraries of Redland project (tested with redland-1.0.12 in Ubuntu 11.04).
+Note, that you will have to install Redlander (librdf) for Redlander to work.
 
 = Usage
 
@@ -34,19 +34,21 @@ Most of Redlander functionality is accessable via these statements. The API is a
   $ st = Redlander::Statement.new(:subject => s, :predicate => p, :object => "another label")
   $ m.statements.add(st)
 
-  m.statements.size    # => 2
+  $ m.statements.size    # => 2
+
+  $ m.statements.each { |st| puts st }
 
 Finding statements:
 
   m.statements.find(:first, :object => "subject!")
   m.statements.all(:object => "another label")
-  m.statements.find(:all, :object => "subject!") { |statement|
+  m.statements.find(:all, :object => "subject!").each { |statement|
     puts statement.subject
   }
 
-Note the difference between "find(:all)" and "all" methods: the former is "lazy" (so it is possible to run sub-queries on its output), while the latter is not.
+Note that "m.statements.each" is "lazy", while "m.statements.all" (and other finders) are not.
 
-For more detail refer to the documentation of Model, Statement, Storage and other classes of Redlander.
+For more details refer to the documentation of Model, Statement, Storage and other classes of Redlander.
 
 = Exceptions
 
