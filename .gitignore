@@ -1,5 +1,6 @@
 *~
 .*~
+*.rbc
 ext/*.o
 ext/*.so
 ext/*.bundle

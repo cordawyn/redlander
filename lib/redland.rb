@@ -1,9 +1,14 @@
 # FFI bindings
-require "ffi"
 
 module Redland
-  extend FFI::Library
-  ffi_lib "rdf.so.0"
+  if !defined?(RUBY_ENGINE) || RUBY_ENGINE=='ruby'
+    require 'ffi'
+    extend FFI::Library
+    ffi_lib "rdf.so.0"
+  else
+    extend FFI::Library
+    ffi_lib "librdf.so.0"
+  end
 
   # World
   attach_function :librdf_new_world, [], :pointer
