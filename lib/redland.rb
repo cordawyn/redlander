@@ -34,6 +34,7 @@ module Redland
   # Statement
   attach_function :librdf_free_statement, [:pointer], :void
   attach_function :librdf_new_statement_from_nodes, [:pointer, :pointer, :pointer, :pointer], :pointer
+  attach_function :librdf_new_statement_from_statement, [:pointer], :pointer
   attach_function :librdf_statement_get_subject, [:pointer], :pointer
   attach_function :librdf_statement_get_predicate, [:pointer], :pointer
   attach_function :librdf_statement_get_object, [:pointer], :pointer
@@ -77,6 +78,7 @@ module Redland
 
   # URI
   attach_function :librdf_new_uri, [:pointer, :string], :pointer
+  attach_function :librdf_new_uri_from_uri, [:pointer], :pointer
   attach_function :librdf_free_uri, [:pointer], :void
   attach_function :librdf_uri_to_string, [:pointer], :string
 end

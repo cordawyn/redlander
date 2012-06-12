@@ -4,12 +4,14 @@ require 'date'
 
 describe Node do
 
-  it "should be created with default options" do
-    lambda { Node.new }.should_not raise_exception
-  end
+  describe "blank" do
+    subject { Node.new }
 
-  it "should create a blank node" do
-    Node.new.should be_blank
+    it { should be_blank }
+
+    it "should have a blank identifier for a blank node" do
+      subject.value.should match(/^_:\w+$/)
+    end
   end
 
   it "should create a resource node" do
@@ -70,11 +72,6 @@ describe Node do
     node.value.should be_an_instance_of(Time)
     # surprisingly, two instances of the same time do not compare
     node.value.xmlschema.should eql(t.xmlschema)
-  end
-
-  it "should have a blank identifier for a blank node" do
-    node = Node.new
-    node.value.should match(/^_:\w+$/)
   end
 
   it "should have an instance of URI for a resource node" do

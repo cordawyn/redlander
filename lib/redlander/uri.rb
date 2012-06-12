@@ -8,9 +8,9 @@ module Redlander
                    Redland.librdf_new_uri(Redlander.rdf_world, source.to_s)
                  when Node
                    if source.resource?
-                     Redland.librdf_node_get_uri(source.rdf_node)
+                     copy_rdf_uri_on_initialize(Redland.librdf_node_get_uri(source.rdf_node))
                    elsif source.literal?
-                     Redland.librdf_node_get_literal_value_datatype_uri(source.rdf_node)
+                     copy_rdf_uri_on_initialize(Redland.librdf_node_get_literal_value_datatype_uri(source.rdf_node))
                    else
                      raise NotImplementedError.new
                    end
@@ -24,6 +24,17 @@ module Redlander
 
     def to_s
       Redland.librdf_uri_to_string(@rdf_uri)
+    end
+
+
+    private
+
+    def copy_rdf_uri_on_initialize(u)
+      if u.null?
+        raise RedlandError.new("Failed to create URI")
+      else
+        Redland.librdf_new_uri_from_uri(u)
+      end
     end
   end
 end
