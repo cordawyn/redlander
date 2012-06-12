@@ -28,9 +28,9 @@ module Redlander
     # (Does not work for all storages, in which case the changes are instanteous).
     def transaction
       if block_given?
-        Redland.librdf_model_transaction_start(@rdf_model).zero? || RedlandError.new("Failed to initialize a transaction")
+        Redland.librdf_model_transaction_start(@rdf_model).zero? || raise(RedlandError, "Failed to initialize a transaction")
         yield
-        Redland.librdf_model_transaction_commit(@rdf_model).zero? || RedlandError.new("Failed to commit the transaction")
+        Redland.librdf_model_transaction_commit(@rdf_model).zero? || raise(RedlandError, "Failed to commit the transaction")
       end
     rescue
       rollback
@@ -39,7 +39,7 @@ module Redlander
 
     # Rollback the transaction
     def rollback
-      Redland.librdf_model_transaction_rollback(@rdf_model).zero? || RedlandError.new("Failed to rollback the latest transaction")
+      Redland.librdf_model_transaction_rollback(@rdf_model).zero? || raise(RedlandError, "Failed to rollback the latest transaction")
     end
   end
 end

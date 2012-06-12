@@ -2,19 +2,11 @@ require "spec_helper"
 
 describe Model do
 
-  it "should be created with default options" do
-    lambda { Model.new }.should_not raise_exception
-  end
+  before { @model = Model.new }
 
   describe "statements" do
 
-    before :each do
-      @model = Model.new
-    end
-
-    it do
-      @model.statements.should be_an_instance_of(ModelProxy)
-    end
+    it { @model.statements.should be_an_instance_of(ModelProxy) }
 
     it "should be created in the model" do
       lambda {
@@ -107,7 +99,6 @@ describe Model do
   describe "serialization" do
 
     before :each do
-      @model = Model.new
       s = URI.parse("http://example.com/concepts#two-dimensional_seismic_imaging")
       p = URI.parse("http://www.w3.org/2000/01/rdf-schema#label")
       o = "2-D seismic imaging@en"
@@ -197,10 +188,6 @@ describe Model do
 
   describe "deserialization" do
 
-    before :each do
-      @model = Model.new
-    end
-
     it "should be successful for RDF/XML data" do
       content = '<?xml version="1.0" encoding="utf-8"?><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="http://example.com/concepts#two-dimensional_seismic_imaging"><ns0:label xmlns:ns0="http://www.w3.org/2000/01/rdf-schema#" xml:lang="en">2-D seismic imaging</ns0:label></rdf:Description></rdf:RDF>'
       lambda {
@@ -225,6 +212,44 @@ foo:bar foo: : .'
       }.should change(@model.statements, :size).by(1)
     end
 
+  end
+
+  describe "transactions" do
+    before do
+      Redland.stub(:librdf_model_transaction_start => 0,
+                   :librdf_model_transaction_commit => 0,
+                   :librdf_model_transaction_rollback => 0)
+    end
+
+    context "when start fails" do
+      before { Redland.stub(:librdf_model_transaction_start => -1) }
+
+      it "should raise RedlandError" do
+        lambda {
+          @model.transaction { true }
+        }.should raise_exception RedlandError
+      end
+    end
+
+    context "when commit fails" do
+      before { Redland.stub(:librdf_model_transaction_commit => -1) }
+
+      it "should raise RedlandError" do
+        lambda {
+          @model.transaction { true }
+        }.should raise_exception RedlandError
+      end
+    end
+
+    context "when rollback fails" do
+      before { Redland.stub(:librdf_model_transaction_rollback => -1) }
+
+      it "should raise RedlandError" do
+        lambda {
+          @model.rollback
+        }.should raise_exception RedlandError
+      end
+    end
   end
 
 end
