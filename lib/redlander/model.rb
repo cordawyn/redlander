@@ -1,3 +1,8 @@
+require 'redlander/storage'
+require 'redlander/parser'
+require 'redlander/serializer'
+require 'redlander/model_proxy'
+
 module Redlander
   class Model
     include Redlander::ParsingInstanceMethods

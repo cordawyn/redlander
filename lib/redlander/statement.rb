@@ -1,3 +1,6 @@
+require 'redlander/stream'
+require "redlander/error_container"
+
 module Redlander
   class Statement
     include ErrorContainer

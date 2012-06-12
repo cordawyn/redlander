@@ -1,26 +1,15 @@
 require 'uri'
 require 'xml_schema'
+require 'redland'
+require 'redlander/version'
+
+require "redlander/exceptions"
+require 'redlander/uri'
+require 'redlander/node'
+require 'redlander/model'
+require 'redlander/statement'
 
 module Redlander
-  require 'redland'
-  require 'redlander/version'
-
-  class RedlandError < RuntimeError; end
-
-  autoload :ErrorContainer, 'redlander/error_container'
-  autoload :Uri, 'redlander/uri'
-  autoload :Parser, 'redlander/parser'
-  autoload :ParserProxy, 'redlander/parser_proxy'
-  autoload :Serializer, 'redlander/serializer'
-  autoload :Model, 'redlander/model'
-  autoload :ModelProxy, 'redlander/model_proxy'
-  autoload :Node, 'redlander/node'
-  autoload :Stream, 'redlander/stream'
-  autoload :Storage, 'redlander/storage'
-  autoload :ParsingInstanceMethods, 'redlander/parser'
-  autoload :SerializingInstanceMethods, 'redlander/serializer'
-  autoload :StreamEnumerator, 'redlander/stream_enumerator'
-  autoload :Statement, 'redlander/statement'
 
   class << self
     def rdf_world

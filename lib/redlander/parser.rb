@@ -1,3 +1,5 @@
+require 'redlander/parser_proxy'
+
 module Redlander
   class Parser
     attr_reader :rdf_parser

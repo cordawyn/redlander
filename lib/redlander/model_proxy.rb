@@ -1,3 +1,6 @@
+require 'redlander/stream'
+require 'redlander/stream_enumerator'
+
 module Redlander
   class ModelProxy
     include StreamEnumerator
