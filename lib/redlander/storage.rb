@@ -1,7 +1,5 @@
 module Redlander
   class Storage
-    VALID_STORAGE_TYPES = [:memory, :hashes, :file, :uri, :tstore, :mysql, :sqlite, :postgresql]
-
     attr_reader :rdf_storage
 
     # Creates a store of the given type
@@ -15,7 +13,12 @@ module Redlander
     #   :sqlite
     #   :postgresql
     #   :tstore
-    # Options are:
+    #   :virtuoso
+    #   ... anything else that Redland can handle.
+    #
+    # Options are storage-specific.
+    # Read the documentation for the appropriate Redland Storage module.
+    #
     #   :name       - ?
     #   :host       - database host name (for store types: :postgres, :mysql, :tstore)
     #   :port       - database host port (for store types: :postgres, :mysql, :tstore)
@@ -34,15 +37,11 @@ module Redlander
     def initialize(options = {})
       storage_type, storage_options = split_options(options.dup)
 
-      unless VALID_STORAGE_TYPES.include?(storage_type)
-        raise RedlandError.new("Unknown storage type: #{storage_type}")
-      end
-
       @rdf_storage = Redland.librdf_new_storage(Redlander.rdf_world,
                                                 storage_type.to_s,
                                                 storage_options.delete(:name).to_s,
                                                 Redlander.to_rdf_options(storage_options))
-      raise RedlandError.new("Failed to initialize storage") if @rdf_storage.null?
+      raise RedlandError.new("Failed to initialize '#{storage_type}' storage") if @rdf_storage.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_storage(@rdf_storage) })
     end
 
