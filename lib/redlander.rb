@@ -41,6 +41,10 @@ module Redlander
     #   1) Convert boolean values into 'yes/no' values
     #   2) Change underscores in key names into dashes ('dhar_ma' => 'dhar-ma')
     #   3) Join all options as "key='value'" pairs in a comma-separated string
+    #
+    # E.g.:
+    #   to_rdf_options {:key => true, "key_board" => 3}
+    #   # => "key='yes',key-board='3'"
     def to_rdf_options(options = {})
       options.inject([]){|opts, option_pair|
         key = option_pair[0].to_s.gsub(/_/, '-')
