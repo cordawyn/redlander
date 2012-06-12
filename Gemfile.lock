@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    redlander (0.3.4)
+    redlander (0.3.5)
       ffi (~> 1.0)
       xml_schema (~> 0.0.1)
 
