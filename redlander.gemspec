@@ -15,12 +15,12 @@ Gem::Specification.new do |s|
     Advanced Redland bindings.
   END
 
-  files = Dir.glob('lib/redlander/**/*')
-  files += Dir.glob('spec/**/*')
-  files += Dir.glob('tasks/**/*')
-  files += %w[Rakefile lib/redlander.rb]
+  files = Dir.glob('lib/**/*.rb')
+  files += Dir.glob('spec/**/*.rb')
+  files += Dir.glob('tasks/**/*.rb')
+  files += %w[Rakefile]
   s.files       = files
-  s.test_files  = Dir.glob('spec/**/*')
+  s.test_files  = Dir.glob('spec/**/*_spec.rb')
 
   # s.add_dependency("redland", "~> 1.0")
   s.add_dependency("xml_schema", "~> 0.0.1")
