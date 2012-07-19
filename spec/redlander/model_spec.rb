@@ -14,6 +14,10 @@ describe Model do
       }.should change(@model.statements, :size).by(1)
     end
 
+    it "should return enumerator" do
+      @model.statements.each.should be_a Enumerator
+    end
+
     it "should be iterated over" do
       statement = @model.statements.create(statement_attributes)
       statements = []

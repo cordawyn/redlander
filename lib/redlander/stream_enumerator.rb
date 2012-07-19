@@ -10,7 +10,7 @@ module Redlander
           @stream.succ
         end
       else
-        raise ::LocalJumpError.new("no block given")
+        enum_for(:each)
       end
     end
   end
