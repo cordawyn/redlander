@@ -4,7 +4,6 @@ module Redlander
 
     # Convert something to an RDF stream.
     # Source can be:
-    #   Parser - to parse content into a stream
     #   Model - to convert a model to an RDF stream, or
     #           if content (Statement) supplied,
     #           produce a stream of statements from the given model,
@@ -17,9 +16,6 @@ module Redlander
                       else
                         Redland.librdf_model_as_stream(source.rdf_model)
                       end
-                    when Parser
-                      base_uri = options[:base_uri] ? Uri.new(options[:base_uri]).rdf_uri : nil
-                      Redland.librdf_parser_parse_string_as_stream(source.rdf_parser, content, base_uri)
                     else
                       # TODO
                       raise NotImplementedError.new

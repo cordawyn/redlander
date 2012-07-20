@@ -16,6 +16,8 @@ module Redlander
     #   Stream, so that a statement is extracted from its current position
     def initialize(source = {})
       @rdf_statement = case source
+                       when FFI::Pointer
+                         source
                        when Stream
                          # Pull a (current) statement from the stream
                          copy_rdf_statement_on_initialize(Redland.librdf_stream_get_object(source.rdf_stream))

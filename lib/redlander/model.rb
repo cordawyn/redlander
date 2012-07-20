@@ -1,11 +1,11 @@
 require 'redlander/storage'
-require 'redlander/parser'
+require 'redlander/parsing'
 require 'redlander/serializer'
 require 'redlander/model_proxy'
 
 module Redlander
   class Model
-    include Redlander::ParsingInstanceMethods
+    include Redlander::Parsing
     include Redlander::SerializingInstanceMethods
 
     attr_reader :rdf_model

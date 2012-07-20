@@ -74,6 +74,7 @@ module Redland
   attach_function :librdf_free_parser, [:pointer], :void
   attach_function :librdf_parser_parse_into_model, [:pointer, :pointer, :pointer, :pointer], :int
   attach_function :librdf_parser_parse_string_into_model, [:pointer, :string, :pointer, :pointer], :int
+  attach_function :librdf_parser_parse_as_stream, [:pointer, :pointer, :pointer], :pointer
   attach_function :librdf_parser_parse_string_as_stream, [:pointer, :string, :pointer], :pointer
 
   # URI
