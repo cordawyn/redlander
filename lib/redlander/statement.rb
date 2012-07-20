@@ -36,18 +36,18 @@ module Redlander
     end
 
     def subject
-      node = Node.new(self, :subject)
-      node.rdf_node.null? ? nil : node
+      rdf_node = Redland.librdf_statement_get_subject(@rdf_statement)
+      rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
     def predicate
-      node = Node.new(self, :predicate)
-      node.rdf_node.null? ? nil : node
+      rdf_node = Redland.librdf_statement_get_predicate(@rdf_statement)
+      rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
     def object
-      node = Node.new(self, :object)
-      node.rdf_node.null? ? nil : node
+      rdf_node = Redland.librdf_statement_get_object(@rdf_statement)
+      rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
     # set the subject of the statement

@@ -19,48 +19,26 @@ module Redlander
     # Note that you cannot create a resource node from an URI string,
     # it must be an instance of URI. Otherwise it is treated as a string literal.
     def initialize(arg = nil, role = :subject)
-      @bound = false
       @rdf_node = case arg
+                  when FFI::Pointer
+                    unless Redland.librdf_node_is_literal(arg).zero?
+                      rdf_uri = Redland.librdf_node_get_literal_value_datatype_uri(arg)
+                      @datatype = rdf_uri.null? ? Uri.new(XmlSchema.datatype_of("")) : Uri.new(rdf_uri)
+                    end
+                    wrap(arg)
                   when NilClass
                     Redland.librdf_new_node_from_blank_identifier(Redlander.rdf_world, nil)
                   when URI
                     Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, arg.to_s)
-                  when Node
+                  when Node # TODO: is it really necessary?
                     Redland.librdf_new_node_from_node(arg.rdf_node)
-                  when Statement
-                    # TODO: Bound nodes should better be produced
-                    # using an explicit "factory" like Node.from_statement
-                    # to keep the clutter in the constructor at minimum.
-                    # (Esp. handling the "bound" stuff)
-                    @bound = true
-                    case role
-                    when :subject
-                      wrap(Redland.librdf_statement_get_subject(arg.rdf_statement), @bound)
-                    when :object
-                      wrap(Redland.librdf_statement_get_object(arg.rdf_statement), @bound)
-                    when :predicate
-                      wrap(Redland.librdf_statement_get_predicate(arg.rdf_statement), @bound)
-                    else
-                      raise RedlandError.new("Invalid role specified")
-                    end
                   else
                     value = arg.respond_to?(:xmlschema) ? arg.xmlschema : arg.to_s
                     @datatype = Uri.new(XmlSchema.datatype_of(arg))
                     Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, @datatype.rdf_uri)
                   end
-      if @rdf_node.null?
-        raise RedlandError.new("Failed to create a new node") unless @bound
-      else
-        ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_node(@rdf_node) })
-        # bound nodes cannot be added to (other) statements
-        freeze if @bound
-      end
-    end
-
-    # Bound nodes are those belonging to a statement
-    # (bound nodes cannot be modified or added to other statements).
-    def bound?
-      @bound
+      raise RedlandError.new("Failed to create a new node") if @rdf_node.null?
+      ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_node(@rdf_node) })
     end
 
     def resource?
@@ -116,13 +94,9 @@ module Redlander
     private
 
     # :nodoc:
-    def wrap(n, bound = false)
+    def wrap(n)
       if n.null?
-        if bound
-          n
-        else
-          raise RedlandError.new("Failed to create a new node")
-        end
+        raise RedlandError.new("Failed to create a new node")
       else
         Redland.librdf_new_node_from_node(n)
       end

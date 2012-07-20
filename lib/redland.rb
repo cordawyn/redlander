@@ -52,6 +52,7 @@ module Redland
   attach_function :librdf_node_is_resource, [:pointer], :int
   attach_function :librdf_node_is_literal, [:pointer], :int
   attach_function :librdf_node_is_blank, [:pointer], :int
+  attach_function :librdf_node_get_literal_value, [:pointer], :string
   attach_function :librdf_node_get_literal_value_datatype_uri, [:pointer], :pointer
   attach_function :librdf_node_equals, [:pointer, :pointer], :int
   attach_function :librdf_node_to_string, [:pointer], :string

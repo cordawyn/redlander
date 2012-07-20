@@ -19,6 +19,13 @@ describe Node do
     Node.new(resource_uri).should be_resource
   end
 
+  it "should create a literal node from a literal rdf_node" do
+    node1 = Node.new("hello, world")
+    node2 = Node.new(node1.rdf_node)
+    node2.datatype.should_not be_nil
+    node2.datatype.should eql node1.datatype
+  end
+
   it "should create a string literal" do
     node = Node.new("hello, world")
     node.should be_literal
