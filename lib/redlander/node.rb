@@ -35,11 +35,11 @@ module Redlander
                     @bound = true
                     case role
                     when :subject
-                      Node._copy(Redland.librdf_statement_get_subject(arg.rdf_statement), @bound)
+                      wrap(Redland.librdf_statement_get_subject(arg.rdf_statement), @bound)
                     when :object
-                      Node._copy(Redland.librdf_statement_get_object(arg.rdf_statement), @bound)
+                      wrap(Redland.librdf_statement_get_object(arg.rdf_statement), @bound)
                     when :predicate
-                      Node._copy(Redland.librdf_statement_get_predicate(arg.rdf_statement), @bound)
+                      wrap(Redland.librdf_statement_get_predicate(arg.rdf_statement), @bound)
                     else
                       raise RedlandError.new("Invalid role specified")
                     end
@@ -112,8 +112,11 @@ module Redlander
       end
     end
 
+
+    private
+
     # :nodoc:
-    def self._copy(n, bound = false)
+    def wrap(n, bound = false)
       if n.null?
         if bound
           n

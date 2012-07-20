@@ -5,7 +5,7 @@ module Redlander
     def initialize(source)
       @rdf_uri = case source
                  when FFI::Pointer
-                   Uri._copy(source)
+                   wrap(source)
                  when URI, String
                    Redland.librdf_new_uri(Redlander.rdf_world, source.to_s)
                  else
@@ -25,8 +25,11 @@ module Redlander
     end
     alias_method :==, :eql?
 
+
+    private
+
     # :nodoc:
-    def self._copy(u)
+    def wrap(u)
       if u.null?
         raise RedlandError.new("Failed to create URI")
       else
