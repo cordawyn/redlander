@@ -171,9 +171,9 @@ describe Model do
         filter_object = Uri.new("http://ar.to/#self")
         expect {
           subject.from_rdfxml Uri.new("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf" do |st|
-            st.object.resource?
+            st.object.resource? ? st.object.uri != filter_object : true
           end
-        }.to change(subject.statements, :size).by(30)
+        }.to change(subject.statements, :size).by(57)
       end
     end
 
