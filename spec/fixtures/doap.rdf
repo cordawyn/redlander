@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:nodeID="r1342778465r20668r10">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r10">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">Călin Ardelean</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r10">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">274bd18402fc773ffc0606996aa1fb90b603aa29</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r11">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r11">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">Danny Gagne</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r11">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">6de43e9cf7de53427fea9765706703e4d957c17b</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r12">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r12">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">Joey Geiger</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r12">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">f412d743150d7b27b8468d56e69ca147917ea6fc</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r13">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r13">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">Fumihiro Kato</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r13">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">d31fdd6af7a279a89bf09fdc9f7c44d9d08bb930</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r14">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r14">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">Naoki Kawamukai</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r14">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">5bdcd8e2af4f5952aaeeffbdd371c41525ec761d</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r15">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r15">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">Hellekin O. Wolf</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r15">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">c69f3255ff0639543cc5edfd8116eac8df16fab8</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r16">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r16">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">John Fieber</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r16">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">f7653fc1ac0e82ebb32f092389bd5fc728eaae12</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r17">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r17">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">Keita Urashima</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r17">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">2b4247b6fd5bb4a1383378f325784318680d5ff9</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r18">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r18">
+    <ns0:name xmlns:ns0="http://xmlns.com/foaf/0.1/">Pius Uzamere</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="r1342778465r20668r18">
+    <ns0:mbox_sha1sum xmlns:ns0="http://xmlns.com/foaf/0.1/">bedbbf2451e5beb38d59687c0460032aff92cd3c</ns0:mbox_sha1sum>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <rdf:type rdf:resource="http://usefulinc.com/ns/doap#Project"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:name xmlns:ns0="http://usefulinc.com/ns/doap#">RDF.rb</ns0:name>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:homepage xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://rdf.rubyforge.org/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:license xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:shortdesc xmlns:ns0="http://usefulinc.com/ns/doap#" xml:lang="en">A Ruby library for working with Resource Description Framework (RDF) data.</ns0:shortdesc>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:description xmlns:ns0="http://usefulinc.com/ns/doap#" xml:lang="en">RDF.rb is a pure-Ruby library for working with Resource Description Framework (RDF) data.</ns0:description>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:created xmlns:ns0="http://usefulinc.com/ns/doap#">2007-10-23</ns0:created>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:platform xmlns:ns0="http://usefulinc.com/ns/doap#">Ruby</ns0:platform>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:category xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://dbpedia.org/resource/Resource_Description_Framework"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:category xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://dbpedia.org/resource/Ruby_(programming_language)"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:download-page xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://rubyforge.org/projects/rdf/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:bug-database xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://github.com/bendiken/rdf/issues"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:blog xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://ar.to/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:blog xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://blog.datagraph.org/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:vendor xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://datagraph.org/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:developer xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://ar.to/#self"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:developer xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://bhuga.net/#ben"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:developer xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://greggkellogg.net/foaf#me"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:maintainer xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://ar.to/#self"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:maintainer xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://bhuga.net/#ben"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:maintainer xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://greggkellogg.net/foaf#me"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:documenter xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://ar.to/#self"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:documenter xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://bhuga.net/#ben"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:documenter xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:resource="http://greggkellogg.net/foaf#me"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r10"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r11"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r12"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r13"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r14"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r15"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r16"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r17"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:helper xmlns:ns0="http://usefulinc.com/ns/doap#" rdf:nodeID="r1342778465r20668r18"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:maker xmlns:ns0="http://xmlns.com/foaf/0.1/" rdf:resource="http://ar.to/#self"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rubygems.org/gems/rdf">
+    <ns0:creator xmlns:ns0="http://purl.org/dc/terms/" rdf:resource="http://ar.to/#self"/>
+  </rdf:Description>
+</rdf:RDF>

@@ -4,16 +4,10 @@ module Redlander
 
     def initialize(source)
       @rdf_uri = case source
+                 when FFI::Pointer
+                   Uri._copy(source)
                  when URI, String
                    Redland.librdf_new_uri(Redlander.rdf_world, source.to_s)
-                 when Node
-                   if source.resource?
-                     copy_rdf_uri_on_initialize(Redland.librdf_node_get_uri(source.rdf_node))
-                   elsif source.literal?
-                     copy_rdf_uri_on_initialize(Redland.librdf_node_get_literal_value_datatype_uri(source.rdf_node))
-                   else
-                     raise NotImplementedError.new
-                   end
                  else
                    # TODO
                    raise NotImplementedError.new
@@ -26,10 +20,8 @@ module Redlander
       Redland.librdf_uri_to_string(@rdf_uri)
     end
 
-
-    private
-
-    def copy_rdf_uri_on_initialize(u)
+    # :nodoc:
+    def self._copy(u)
       if u.null?
         raise RedlandError.new("Failed to create URI")
       else

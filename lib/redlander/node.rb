@@ -32,11 +32,11 @@ module Redlander
                     @bound = true
                     case role
                     when :subject
-                      copy_rdf_node_on_initialize(Redland.librdf_statement_get_subject(arg.rdf_statement))
+                      Node._copy(Redland.librdf_statement_get_subject(arg.rdf_statement), @bound)
                     when :object
-                      copy_rdf_node_on_initialize(Redland.librdf_statement_get_object(arg.rdf_statement))
+                      Node._copy(Redland.librdf_statement_get_object(arg.rdf_statement), @bound)
                     when :predicate
-                      copy_rdf_node_on_initialize(Redland.librdf_statement_get_predicate(arg.rdf_statement))
+                      Node._copy(Redland.librdf_statement_get_predicate(arg.rdf_statement), @bound)
                     else
                       raise RedlandError.new("Invalid role specified")
                     end
@@ -77,7 +77,7 @@ module Redlander
     # Return the datatype URI of the node.
     # Returns nil if the node is not a literal, or has no datatype URI.
     def datatype
-      Uri.new(self).to_s if literal?
+      uri.to_s if literal?
     end
 
     # Equivalency. Only works for comparing two Nodes.
@@ -95,21 +95,30 @@ module Redlander
       Redland.librdf_node_to_string(@rdf_node)
     end
 
+    # Internal URI of the Node
+    def uri
+      if resource?
+        Uri.new(Redland.librdf_node_get_uri(@rdf_node))
+      elsif literal?
+        Uri.new(Redland.librdf_node_get_literal_value_datatype_uri(@rdf_node))
+      else
+        nil
+      end
+    end
+
     # Value of the literal node as a Ruby object instance.
     def value
       if resource?
-        URI.parse(Uri.new(self).to_s)
+        URI.parse(uri.to_s)
       else
         XmlSchema.instantiate(to_s)
       end
     end
 
-
-    private
-
-    def copy_rdf_node_on_initialize(n)
+    # :nodoc:
+    def self._copy(n, bound = false)
       if n.null?
-        if bound?
+        if bound
           n
         else
           raise RedlandError.new("Failed to create a new node")

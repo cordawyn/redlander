@@ -1,87 +1,78 @@
 require "spec_helper"
 
 describe Model do
-
-  before { @model = Model.new }
+  let(:model) { described_class.new }
+  subject { model }
 
   describe "statements" do
+    subject { model.statements }
 
-    it { @model.statements.should be_an_instance_of(ModelProxy) }
+    it { should be_an_instance_of(ModelProxy) }
+
+    context "when enumerated" do
+      context "without a block" do
+        subject { model.statements.each }
+
+        it { should be_a Enumerator }
+      end
+
+      context "with a block" do
+        before do
+          @statement = subject.create(statement_attributes)
+          @statements = []
+        end
+
+        it "should be iterated over" do
+          expect {
+            subject.each { |s| @statements << s }
+          }.to change(@statements, :size).by(1)
+          expect(@statements).to include @statement
+        end
+      end
+    end
+
+    context "when searched" do
+      subject { model.statements.find(:first, @conditions) }
+
+      before { @statement = model.statements.create(statement_attributes) }
+
+      context "with empty conditions" do
+        before { @conditions = {} }
+
+        it { should eql @statement }
+      end
+
+      context "with matching conditions" do
+        before { @conditions = {:object => @statement.object} }
+
+        it { should eql @statement }
+      end
+
+      context "with non-matching conditions" do
+        before { @conditions = {:object => "another object"} }
+
+        it { should be_nil }
+      end
+    end
 
     it "should be created in the model" do
-      lambda {
-        @model.statements.create(statement_attributes)
-      }.should change(@model.statements, :size).by(1)
+      expect {
+        subject.create(statement_attributes)
+      }.to change(subject, :size).by(1)
     end
 
-    it "should return enumerator" do
-      @model.statements.each.should be_a Enumerator
-    end
-
-    it "should be iterated over" do
-      statement = @model.statements.create(statement_attributes)
-      statements = []
-      lambda {
-        @model.statements.each do |s|
-          statements << s
-        end
-      }.should change(statements, :size).by(1)
-      statements.first.should eql(statement)
-    end
-
-    it "should be added to the model" do
+    it "should be added to" do
       statement = Statement.new(statement_attributes)
-      lambda {
-        @model.statements.add(statement)
-      }.should change(@model.statements, :size).by(1)
-      @model.statements.should include(statement)
+      lambda { subject.add(statement) }.should change(subject, :size).by(1)
+      subject.should include(statement)
     end
 
-    it "should be found without a block" do
-      statement = @model.statements.create(statement_attributes)
-      @model.statements.find(:first).should eql(statement)
-      @model.statements.first.should eql(statement)
-      @model.statements.all.should eql([statement])
-    end
-
-    it "should be found with a block" do
-      statements = []
-      statement = @model.statements.create(statement_attributes)
+    it "should be removed from" do
+      statement = subject.create(statement_attributes)
       lambda {
-        @model.statements.each do |st|
-          statements << st
-        end
-      }.should change(statements, :size).by(1)
-      statements.first.should eql(statement)
-    end
-
-    it "should be found by an attribute" do
-      statements = []
-      statement = @model.statements.create(statement_attributes)
-      lambda {
-        @model.statements.find(:all, :object => statement.object).each do |st|
-          statements << st
-        end
-      }.should change(statements, :size).by(1)
-      statements.first.should eql(statement)
-    end
-
-    it "should not be found with a block" do
-      statements = []
-      statement = @model.statements.create(statement_attributes)
-      lambda {
-        @model.statements.find(:all, :object => "another object").each do |st|
-          statements << st
-        end
-      }.should_not change(statements, :size)
-    end
-
-    it "should be removed from the model" do
-      statement = @model.statements.create(statement_attributes)
-      lambda {
-        @model.statements.delete(statement)
-      }.should change(@model.statements, :size).by(-1)
-      @model.statements.should_not include(statement)
+        subject.delete(statement)
+      }.should change(subject, :size).by(-1)
+      subject.should_not include(statement)
     end
 
 
@@ -97,85 +88,56 @@ describe Model do
         :object => o
       }
     end
-
   end
 
   describe "serialization" do
-
-    before :each do
+    before do
       s = URI.parse("http://example.com/concepts#two-dimensional_seismic_imaging")
       p = URI.parse("http://www.w3.org/2000/01/rdf-schema#label")
       o = "2-D seismic imaging@en"
-      @model.statements.create(:subject => s, :predicate => p, :object => o)
+      subject.statements.create(:subject => s, :predicate => p, :object => o)
     end
 
     it "should produce RDF/XML content" do
-      content = @model.to_rdfxml
+      content = subject.to_rdfxml
       content.should be_an_instance_of(String)
       content.should include('2-D seismic imaging')
     end
 
     it "should produce N-Triples content" do
-      content = @model.to_ntriples
+      content = subject.to_ntriples
       content.should be_an_instance_of(String)
       content.should include('2-D seismic imaging@en')
     end
 
     it "should produce Turtle content" do
-      content = @model.to_turtle
+      content = subject.to_turtle
       content.should be_an_instance_of(String)
       content.should include('2-D seismic imaging@en')
     end
 
     it "should produce JSON content" do
-      content = @model.to_json
+      content = subject.to_json
       content.should be_an_instance_of(String)
       content.should include('2-D seismic imaging@en')
     end
 
     it "should produce DOT content" do
-      content = @model.to_dot
+      content = subject.to_dot
       content.should be_an_instance_of(String)
       content.should include('2-D seismic imaging@en')
     end
 
-    describe "file source" do
-
-      before :each do
-        content = '<?xml version="1.0" encoding="utf-8"?><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="http://example.com/concepts#two-dimensional_seismic_imaging"><ns0:label xmlns:ns0="http://www.w3.org/2000/01/rdf-schema#" xml:lang="en">2-D seismic imaging</ns0:label></rdf:Description></rdf:RDF>'
-        reference_model = Model.new
-        reference_model.from_rdfxml(content, :base_uri => 'http://example.com/concepts')
-        reference_model.to_file(filename)
-      end
-
-      after :each do
-        cleanup
-      end
-
-      it "should be loaded from a file" do
-        lambda {
-          @model.from_file(filename, :base_uri => 'http://example.com/concepts')
-        }.should change(@model.statements, :size).by(1)
-      end
-
-    end
-
     describe "file destination" do
+      before { cleanup }
 
-      before :each do
-        cleanup
-      end
-
-      after :each do
-        cleanup
-      end
+      after { cleanup }
 
       it "should produce a file" do
-        @model.to_file(filename)
+        subject.to_file(filename)
         File.should be_exists(filename)
         File.size(filename).should_not be_zero
       end
-
     end
 
     private
@@ -187,35 +149,65 @@ describe Model do
     def filename
       "test_model.rdf"
     end
-
   end
 
   describe "deserialization" do
+    context "from RDF/XML" do
+      before { @filename = Redlander.fixture_path("doap.rdf") }
 
-    it "should be successful for RDF/XML data" do
-      content = '<?xml version="1.0" encoding="utf-8"?><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="http://example.com/concepts#two-dimensional_seismic_imaging"><ns0:label xmlns:ns0="http://www.w3.org/2000/01/rdf-schema#" xml:lang="en">2-D seismic imaging</ns0:label></rdf:Description></rdf:RDF>'
-      lambda {
-        @model.from_rdfxml(content, :base_uri => 'http://example.com/concepts')
-      }.should change(@model.statements, :size).by(1)
+      it "should parse from string" do
+        expect {
+          subject.from_rdfxml File.read(@filename), :base_uri => "http://rubygems.org/gems/rdf"
+        }.to change(subject.statements, :size).by(62)
+      end
+
+      it "should parse from URI/file" do
+        expect {
+          subject.from_rdfxml URI("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf"
+        }.to change(subject.statements, :size).by(62)
+      end
+
+      it "should filter statements" do
+        filter_object = Uri.new("http://ar.to/#self")
+        expect {
+          subject.from_rdfxml Uri.new("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf" do |st|
+            st.object.resource?
+          end
+        }.to change(subject.statements, :size).by(30)
+      end
     end
 
-    it "should be successful for N-Triples data" do
-      content = '<http://example.org/ns/a2> <http://example.org/ns/b2> <http://example.org/ns/c2> .'
-      lambda {
-        @model.from_ntriples(content)
-      }.should change(@model.statements, :size).by(1)
+    context "from NTriples" do
+      before { @filename = Redlander.fixture_path("doap.nt") }
+
+      it "should parse from string" do
+        expect {
+          subject.from_ntriples File.read(@filename)
+        }.to change(subject.statements, :size).by(62)
+      end
+
+      it "should parse from URI/file" do
+        expect {
+          subject.from_ntriples URI("file://" + @filename)
+        }.to change(subject.statements, :size).by(62)
+      end
     end
 
-    it "should be successful for Turtle data" do
-      content = '# this is a complete turtle document
-@prefix foo: <http://example.org/ns#> .
-@prefix : <http://other.example.org/ns#> .
-foo:bar foo: : .'
-      lambda {
-        @model.from_turtle(content, :base_uri => 'http://example.com/concepts')
-      }.should change(@model.statements, :size).by(1)
-    end
+    context "from Turtle" do
+      before { @filename = Redlander.fixture_path("doap.ttl") }
 
+      it "should parse from string" do
+        expect {
+          subject.from_turtle File.read(@filename), :base_uri => "http://rubygems.org/gems/rdf"
+        }.to change(subject.statements, :size).by(62)
+      end
+
+      it "should parse from URI/file" do
+        expect {
+          subject.from_turtle URI("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf"
+        }.to change(subject.statements, :size).by(62)
+      end
+    end
   end
 
   describe "transactions" do
@@ -230,7 +222,7 @@ foo:bar foo: : .'
 
       it "should raise RedlandError" do
         lambda {
-          @model.transaction { true }
+          subject.transaction { true }
         }.should raise_exception RedlandError
       end
     end
@@ -240,7 +232,7 @@ foo:bar foo: : .'
 
       it "should raise RedlandError" do
         lambda {
-          @model.transaction { true }
+          subject.transaction { true }
         }.should raise_exception RedlandError
       end
     end
@@ -250,10 +242,9 @@ foo:bar foo: : .'
 
       it "should raise RedlandError" do
         lambda {
-          @model.rollback
+          subject.rollback
         }.should raise_exception RedlandError
       end
     end
   end
-
 end
