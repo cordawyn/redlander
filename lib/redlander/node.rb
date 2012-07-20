@@ -2,6 +2,9 @@ module Redlander
   class Node
     attr_reader :rdf_node
 
+    # Datatype URI for the literal node, or nil
+    attr_reader :datatype
+
     # Create a RDF node.
     # Argument can be:
     #   - an instance of URI - to create a RDF "resource",
@@ -42,8 +45,8 @@ module Redlander
                     end
                   else
                     value = arg.respond_to?(:xmlschema) ? arg.xmlschema : arg.to_s
-                    datatype = Uri.new(XmlSchema.datatype_of(arg))
-                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, datatype.rdf_uri)
+                    @datatype = Uri.new(XmlSchema.datatype_of(arg))
+                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, @datatype.rdf_uri)
                   end
       if @rdf_node.null?
         raise RedlandError.new("Failed to create a new node") unless @bound
@@ -74,12 +77,6 @@ module Redlander
       Redland.librdf_node_is_blank(@rdf_node) != 0
     end
 
-    # Return the datatype URI of the node.
-    # Returns nil if the node is not a literal, or has no datatype URI.
-    def datatype
-      uri.to_s if literal?
-    end
-
     # Equivalency. Only works for comparing two Nodes.
     def eql?(other_node)
       Redland.librdf_node_equals(@rdf_node, other_node.rdf_node) != 0
@@ -100,7 +97,7 @@ module Redlander
       if resource?
         Uri.new(Redland.librdf_node_get_uri(@rdf_node))
       elsif literal?
-        Uri.new(Redland.librdf_node_get_literal_value_datatype_uri(@rdf_node))
+        datatype
       else
         nil
       end
