@@ -51,7 +51,7 @@ module Redlander
 
           while Redland.librdf_stream_end(rdf_stream).zero?
             statement = Statement.new(Redland.librdf_stream_get_object(rdf_stream))
-            yield statement && add(statement)
+            statements.add(statement) if yield statement
             Redland.librdf_stream_next(rdf_stream)
           end
         ensure
@@ -68,24 +68,24 @@ module Redlander
       Redland.librdf_free_parser(rdf_parser)
     end
 
-    def from_rdfxml(content, options = {})
-      from(content, options.merge(:name => "rdfxml"))
+    def from_rdfxml(content, options = {}, &block)
+      from(content, options.merge(:name => "rdfxml"), &block)
     end
 
-    def from_ntriples(content, options = {})
-      from(content, options.merge(:name => "ntriples"))
+    def from_ntriples(content, options = {}, &block)
+      from(content, options.merge(:name => "ntriples"), &block)
     end
 
-    def from_turtle(content, options = {})
-      from(content, options.merge(:name => "turtle"))
+    def from_turtle(content, options = {}, &block)
+      from(content, options.merge(:name => "turtle"), &block)
     end
 
-    def from_uri(uri, options = {})
+    def from_uri(uri, options = {}, &block)
       if uri.is_a?(String)
         uri = URI.parse(uri)
         uri = URI.parse("file://#{File.expand_path(uri.to_s)}") if uri.scheme.nil?
       end
-      from(uri, options)
+      from(uri, options, &block)
     end
     alias_method :from_file, :from_uri
   end

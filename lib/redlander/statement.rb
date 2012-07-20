@@ -17,10 +17,10 @@ module Redlander
     def initialize(source = {})
       @rdf_statement = case source
                        when FFI::Pointer
-                         source
+                         Statement._copy(source)
                        when Stream
                          # Pull a (current) statement from the stream
-                         copy_rdf_statement_on_initialize(Redland.librdf_stream_get_object(source.rdf_stream))
+                         Statement._copy(Redland.librdf_stream_get_object(source.rdf_stream))
                        when Hash
                          # Create a new statement from nodes
                          s = source[:subject] && Node.new(source[:subject]).rdf_node
@@ -93,6 +93,15 @@ module Redlander
       errors.empty?
     end
 
+    # :nodoc:
+    def self._copy(s)
+      if s.null?
+        raise RedlandError.new("Failed to create a new statement")
+      else
+        Redland.librdf_new_statement_from_statement(s)
+      end
+    end
+
 
     private
 
@@ -108,14 +117,6 @@ module Redlander
       else
         node.freeze
         yield
-      end
-    end
-
-    def copy_rdf_statement_on_initialize(s)
-      if s.null?
-        raise RedlandError.new("Failed to create a new statement")
-      else
-        Redland.librdf_new_statement_from_statement(s)
       end
     end
   end
