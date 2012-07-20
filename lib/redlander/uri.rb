@@ -20,6 +20,11 @@ module Redlander
       Redland.librdf_uri_to_string(@rdf_uri)
     end
 
+    def eql?(other_uri)
+      other_uri.is_a?(Uri) && (Redland.librdf_uri_equals(@rdf_uri, other_uri.rdf_uri) != 0)
+    end
+    alias_method :==, :eql?
+
     # :nodoc:
     def self._copy(u)
       if u.null?

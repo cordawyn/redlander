@@ -82,4 +82,5 @@ module Redland
   attach_function :librdf_new_uri_from_uri, [:pointer], :pointer
   attach_function :librdf_free_uri, [:pointer], :void
   attach_function :librdf_uri_to_string, [:pointer], :string
+  attach_function :librdf_uri_equals, [:pointer, :pointer], :int
 end
