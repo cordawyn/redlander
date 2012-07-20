@@ -23,9 +23,9 @@ Gem::Specification.new do |s|
   s.test_files  = Dir.glob('spec/**/*_spec.rb')
 
   # s.add_dependency("redland", "~> 1.0")
-  s.add_dependency("xml_schema", "~> 0.0.1")
-  s.add_dependency("ffi", "~> 1.0")
-  s.add_development_dependency("rspec", "~> 1")
+  s.add_dependency("xml_schema", "~> 0.0.3")
+  s.add_dependency("ffi", "~> 1.1")
+  s.add_development_dependency("rspec", "~> 2")
 
   s.extra_rdoc_files = ['README.rdoc']
   s.has_rdoc = false
