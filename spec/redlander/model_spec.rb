@@ -220,30 +220,42 @@ describe Model do
     context "when start fails" do
       before { Redland.stub(:librdf_model_transaction_start => -1) }
 
-      it "should raise RedlandError" do
+      it "should not raise RedlandError" do
         lambda {
           subject.transaction { true }
-        }.should raise_exception RedlandError
+        }.should_not raise_exception RedlandError
+      end
+
+      it "should raise RedlandError" do
+        expect { subject.transaction_start! }.to raise_exception RedlandError
       end
     end
 
     context "when commit fails" do
       before { Redland.stub(:librdf_model_transaction_commit => -1) }
 
-      it "should raise RedlandError" do
+      it "should not raise RedlandError" do
         lambda {
           subject.transaction { true }
-        }.should raise_exception RedlandError
+        }.should_not raise_exception RedlandError
+      end
+
+      it "should raise RedlandError" do
+        expect { subject.transaction_commit! }.to raise_exception RedlandError
       end
     end
 
     context "when rollback fails" do
       before { Redland.stub(:librdf_model_transaction_rollback => -1) }
 
-      it "should raise RedlandError" do
+      it "should not raise RedlandError" do
         lambda {
           subject.rollback
-        }.should raise_exception RedlandError
+        }.should_not raise_exception RedlandError
+      end
+
+      it "should raise RedlandError" do
+        expect { subject.transaction_rollback! }.to raise_exception RedlandError
       end
     end
   end
