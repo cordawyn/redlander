@@ -20,6 +20,7 @@ module Redlander
         Redland.librdf_model_add_statement(@model.rdf_model, statement.rdf_statement).zero?
       end
     end
+    alias_method :<<, :add
 
     # Delete a statement from the model,
     # or delete all statements matching the given criteria.
