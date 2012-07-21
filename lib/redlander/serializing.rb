@@ -19,13 +19,15 @@ module Redlander
       rdf_serializer = Redland.librdf_new_serializer(Redlander.rdf_world, name, mime_type, type_uri)
       raise RedlandError.new("Failed to create a new serializer") if rdf_serializer.null?
 
-      if options[:file]
-        Redland.librdf_serializer_serialize_model_to_file(rdf_serializer, options[:file], base_uri, @rdf_model).zero?
-      else
-        Redland.librdf_serializer_serialize_model_to_string(rdf_serializer, base_uri, @rdf_model)
+      begin
+        if options[:file]
+          Redland.librdf_serializer_serialize_model_to_file(rdf_serializer, options[:file], base_uri, @rdf_model).zero?
+        else
+          Redland.librdf_serializer_serialize_model_to_string(rdf_serializer, base_uri, @rdf_model)
+        end
+      ensure
+        Redland.librdf_free_serializer(rdf_serializer)
       end
-    ensure
-      Redland.librdf_free_serializer(rdf_serializer)
     end
 
     def to_rdfxml(options = {})

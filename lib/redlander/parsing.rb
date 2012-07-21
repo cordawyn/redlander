@@ -39,8 +39,8 @@ module Redlander
       rdf_parser = Redland.librdf_new_parser(Redlander.rdf_world, name, mime_type, type_uri)
       raise RedlandError, "Failed to create a new '#{name}' parser" if rdf_parser.null?
 
-      if block_given?
-        begin
+      begin
+        if block_given?
           rdf_stream =
             if content.is_a?(Uri)
               Redland.librdf_parser_parse_as_stream(rdf_parser, content.rdf_uri, base_uri)
@@ -49,23 +49,25 @@ module Redlander
             end
           raise RedlandError, "Failed to create a new stream" if rdf_stream.null?
 
-          while Redland.librdf_stream_end(rdf_stream).zero?
-            statement = Statement.new(Redland.librdf_stream_get_object(rdf_stream))
-            statements.add(statement) if yield statement
-            Redland.librdf_stream_next(rdf_stream)
+          begin
+            while Redland.librdf_stream_end(rdf_stream).zero?
+              statement = Statement.new(Redland.librdf_stream_get_object(rdf_stream))
+              statements.add(statement) if yield statement
+              Redland.librdf_stream_next(rdf_stream)
+            end
+          ensure
+            Redland.librdf_free_stream(rdf_stream)
           end
-        ensure
-          Redland.librdf_free_stream(rdf_stream)
-        end
-      else
-        if content.is_a?(Uri)
-          Redland.librdf_parser_parse_into_model(rdf_parser, content.rdf_uri, base_uri, @rdf_model).zero?
         else
-          Redland.librdf_parser_parse_string_into_model(rdf_parser, content, base_uri, @rdf_model).zero?
+          if content.is_a?(Uri)
+            Redland.librdf_parser_parse_into_model(rdf_parser, content.rdf_uri, base_uri, @rdf_model).zero?
+          else
+            Redland.librdf_parser_parse_string_into_model(rdf_parser, content, base_uri, @rdf_model).zero?
+          end
         end
+      ensure
+        Redland.librdf_free_parser(rdf_parser)
       end
-    ensure
-      Redland.librdf_free_parser(rdf_parser)
     end
 
     def from_rdfxml(content, options = {}, &block)
