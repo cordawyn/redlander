@@ -1,4 +1,4 @@
-require 'lib/redlander'
+require 'redlander'
 include Redlander
 
 # Helpful testing methods
