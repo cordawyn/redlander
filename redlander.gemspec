@@ -1,32 +1,26 @@
-$:.unshift(File.dirname(__FILE__)) unless
-  $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+require File.expand_path('../lib/redlander/version', __FILE__)
 
-require 'lib/redlander/version'
+Gem::Specification.new do |gem|
+  gem.name        = 'redlander'
+  gem.authors     = ['Slava Kravchenko']
+  gem.email       = ['slava.kravchenko@gmail.com']
+  gem.version     = ("$Release: #{Redlander::VERSION} $" =~ /[\.\d]+/) && $&
+  gem.platform    = Gem::Platform::RUBY
+  gem.homepage    = "https://github.com/cordawyn/redlander"
+  gem.summary     = "Advanced Redland bindings."
+  gem.description = "Advanced Redland bindings."
 
-Gem::Specification.new do |s|
-  s.name        = 'redlander'
-  s.author      = 'Slava Kravchenko'
-  s.email       = 'slava.kravchenko@gmail.com'
-  s.version     = ("$Release: #{Redlander::VERSION} $" =~ /[\.\d]+/) && $&
-  s.platform    = Gem::Platform::RUBY
-  s.homepage    = "https://github.com/cordawyn/redlander"
-  s.summary     = "Advanced Redland bindings."
-  s.description = <<-END
-    Advanced Redland bindings.
-  END
+  gem.files         = `git ls-files`.split($\)
+  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.require_paths = ["lib"]
 
-  files = Dir.glob('lib/**/*.rb')
-  files += Dir.glob('spec/**/*.rb')
-  files += Dir.glob('tasks/**/*.rb')
-  files += %w[Rakefile]
-  s.files       = files
-  s.test_files  = Dir.glob('spec/**/*_spec.rb')
+  # gem.add_dependency("librdf0", "~> 1.0.14")
+  gem.add_dependency("xml_schema", "~> 0.0.3")
+  gem.add_dependency("ffi", "~> 1.1")
+  gem.add_development_dependency("rspec", "~> 2")
 
-  # s.add_dependency("redland", "~> 1.0")
-  s.add_dependency("xml_schema", "~> 0.0.3")
-  s.add_dependency("ffi", "~> 1.1")
-  s.add_development_dependency("rspec", "~> 2")
-
-  s.extra_rdoc_files = ['README.rdoc']
-  s.has_rdoc = false
+  gem.licenses = ["LICENSE"]
+  gem.extra_rdoc_files = ['README.rdoc']
+  gem.has_rdoc = false
 end
