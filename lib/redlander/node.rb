@@ -6,19 +6,18 @@ module Redlander
     attr_reader :datatype
 
     # Create a RDF node.
-    # Argument can be:
-    #   - an instance of URI - to create a RDF "resource",
-    #   - an instance of Node - to create a copy of the node,
-    #   - nil (or absent) - to create a "blank" node,
-    #   - an instance of Statement ("role" must be supplied then) -
-    #     to create a node from subject, predicate or object
-    #     (determined by "role" parameter) of the statement.
-    #   - any other Ruby object, which can be coerced into a literal.
-    # If nothing else, a RedlandError is thrown.
     #
-    # Note that you cannot create a resource node from an URI string,
-    # it must be an instance of URI. Otherwise it is treated as a string literal.
-    def initialize(arg = nil, role = :subject)
+    # @param [Any] arg
+    #   - an instance of URI - to create a RDF "resource",
+    #     Note that you cannot create a resource node from an URI string,
+    #     it must be an instance of URI. Otherwise it is treated as a string literal.
+    #   - nil (or absent) - to create a blank node,
+    #   - any other Ruby object, which can be coerced into a literal.
+    #   If nothing else, a RedlandError is thrown.
+    #
+    # @param [Hash] options
+    #   - :blank_id - (optional) ID to use for a blank node
+    def initialize(arg = nil, options = {})
       @rdf_node = case arg
                   when FFI::Pointer
                     unless Redland.librdf_node_is_literal(arg).zero?
@@ -27,11 +26,9 @@ module Redlander
                     end
                     wrap(arg)
                   when NilClass
-                    Redland.librdf_new_node_from_blank_identifier(Redlander.rdf_world, nil)
+                    Redland.librdf_new_node_from_blank_identifier(Redlander.rdf_world, options[:blank_id])
                   when URI
                     Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, arg.to_s)
-                  when Node # TODO: is it really necessary?
-                    Redland.librdf_new_node_from_node(arg.rdf_node)
                   else
                     value = arg.respond_to?(:xmlschema) ? arg.xmlschema : arg.to_s
                     @datatype = Uri.new(XmlSchema.datatype_of(arg))

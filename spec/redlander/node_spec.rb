@@ -1,16 +1,24 @@
 require "spec_helper"
-
-require 'date'
+require "date"
 
 describe Node do
+  before { @options = {} }
 
   describe "blank" do
-    subject { Node.new }
+    subject { described_class.new(nil, @options) }
 
     it { should be_blank }
 
     it "should have a blank identifier for a blank node" do
       subject.value.should match(/^_:\w+$/)
+    end
+
+    context "when given :blank_id" do
+      before { @options = {:blank_id => "blank0"} }
+
+      it "should create a node with the given identifier" do
+        expect(subject.value).to eql "_:blank0"
+      end
     end
   end
 

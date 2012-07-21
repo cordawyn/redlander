@@ -23,9 +23,9 @@ module Redlander
                          wrap(Redland.librdf_stream_get_object(source.rdf_stream))
                        when Hash
                          # Create a new statement from nodes
-                         s = source[:subject] && Node.new(source[:subject]).rdf_node
-                         p = source[:predicate] && Node.new(source[:predicate]).rdf_node
-                         o = source[:object] && Node.new(source[:object]).rdf_node
+                         s = rdf_node_from(source[:subject])
+                         p = rdf_node_from(source[:predicate])
+                         o = rdf_node_from(source[:object])
                          Redland.librdf_new_statement_from_nodes(Redlander.rdf_world, s, p, o)
                        else
                          # TODO
@@ -117,6 +117,19 @@ module Redlander
       else
         node.freeze
         yield
+      end
+    end
+
+    # Create a Node from the source
+    # and get its rdf_node, or return nil
+    def rdf_node_from(source)
+      case source
+      when NilClass
+        nil
+      when Node
+        source.rdf_node
+      else
+        Node.new(source).rdf_node
       end
     end
   end
