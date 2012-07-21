@@ -69,9 +69,10 @@ module Redlander
 
     # Wrap changes to the given model in a transaction.
     # If an exception is raised in the block, the transaction is rolled back.
-    # (Does not work for all storages, in which case the changes are instanteous).
     #
-    # @yield [void]
+    # @note Does not work for all storages, in which case the changes are instanteous
+    #
+    # @yieldparam [void]
     # @return [void]
     def transaction
       if block_given?
@@ -94,6 +95,7 @@ module Redlander
     # Start a transaction.
     #
     # @raise [RedlandError] if it is not supported by the backend storage
+    # @return [true]
     def transaction_start!
       raise RedlandError, "Failed to initialize a transaction" unless transaction_start
     end
@@ -108,6 +110,7 @@ module Redlander
     # Commit a transaction.
     #
     # @raise [RedlandError] if it is not supported by the backend storage
+    # @return [true]
     def transaction_commit!
       raise RedlandError, "Failed to commit the transaction" unless transaction_commit
     end
@@ -122,6 +125,7 @@ module Redlander
     # Rollback a transaction.
     #
     # @raise [RedlandError] if it is not supported by the backend storage
+    # @return [true]
     def transaction_rollback!
       raise RedlandError, "Failed to rollback the latest transaction" unless transaction_rollback
     end

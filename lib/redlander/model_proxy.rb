@@ -128,7 +128,7 @@ module Redlander
 
     # Find statements satisfying the given criteria.
     #
-    # @param [Symbol[:first, :all]] scope find just one or all matches
+    # @param [:first, :all] scope find just one or all matches
     # @param [Hash<Symbol, Any>] options
     # @return [Statement, Array, nil]
     def find(scope, options = {})
