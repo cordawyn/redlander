@@ -42,26 +42,38 @@ module Redlander
       raise
     end
 
+    # Start a transaction, if it is supported by the backend storage.
+    #
+    # @return [true, false]
     def transaction_start
       Redland.librdf_model_transaction_start(@rdf_model).zero?
     end
 
+    # Start a transaction, or raise RedlandError if it is not supported by the backend storage.
     def transaction_start!
       raise RedlandError, "Failed to initialize a transaction" unless transaction_start
     end
 
+    # Commit a transaction, if it is supported by the backend storage.
+    #
+    # @return [true, false]
     def transaction_commit
       Redland.librdf_model_transaction_commit(@rdf_model).zero?
     end
 
+    # Commit a transaction, or raise RedlandError if it is not supported by the backend storage.
     def transaction_commit!
       raise RedlandError, "Failed to commit the transaction" unless transaction_commit
     end
 
+    # Rollback a transaction, if it is supported by the backend storage.
+    #
+    # @return [true, false]
     def transaction_rollback
       Redland.librdf_model_transaction_rollback(@rdf_model).zero?
     end
 
+    # Rollback a transaction, or raise RedlandError if it is not supported by the backend storage.
     def transaction_rollback!
       raise RedlandError, "Failed to rollback the latest transaction" unless transaction_rollback
     end

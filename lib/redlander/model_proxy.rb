@@ -2,6 +2,7 @@ module Redlander
   class ModelProxy
     include Enumerable
 
+    # @param [Redlander::Model] model
     def initialize(model)
       @model = model
     end
@@ -11,7 +12,7 @@ module Redlander
     # Only statements that are legal RDF can be added.
     # If the statement already exists in the model, it is not added.
     #
-    # Returns true on success or false on failure.
+    # @return [true, false]
     def add(statement)
       Redland.librdf_model_add_statement(@model.rdf_model, statement.rdf_statement).zero?
     end
@@ -19,13 +20,16 @@ module Redlander
 
     # Delete a statement from the model,
     # or delete all statements matching the given criteria.
-    # Source can be either
-    #   Statement
-    # or
-    #   Hash (all keys are optional)
+    #
+    # @param [Statement, Hash] source
+    #   - for a Hash all keys are optional:
     #     :subject
     #     :predicate
     #     :object
+    # A missing hash key or a statement with a nil node
+    # matches all corresponding nodes in the statements.
+    #
+    # @return [true, false]
     def delete(source)
       statement = case source
                   when Statement
@@ -45,17 +49,30 @@ module Redlander
     #   :subject, :predicate, :object,
     # (see Statement.new for option explanations).
     #
-    # Returns an instance of Statement on success,
-    # or nil if the statement could not be added.
+    # @return [Statement, nil]
     def create(options = {})
       statement = Statement.new(options)
-      add(statement) && statement
+      add(statement) ? statement : nil
     end
 
+    # Checks whether there are no statements in the model.
+    #
+    # @return [true, false]
     def empty?
       size.zero?
     end
 
+    # Size of the model in statements.
+    #
+    # Note the difference between #size and #count:
+    # While #count must iterate across all statements in the model,
+    # #size tries to use a more efficient C implementation.
+    # So #size should be preferred to #count in terms of performance.
+    # However, for non-countable storages, #size falls back to
+    # using #count. Also, #size is not available for enumerables
+    # (e.g. produced from #each (without a block) or otherwise).
+    #
+    # @return [Fixnum]
     def size
       s = Redland.librdf_model_size(@model.rdf_model)
       s < 0 ? count : s
@@ -63,7 +80,7 @@ module Redlander
 
     # Enumerate (and filter) model statements.
     #
-    # @param [Statement, Hash, NilClass] *args
+    # @param [Statement, Hash, nil] *args
     #   - if given Statement or Hash, filter the model statements
     #     according to the specified pattern.
     #
@@ -108,10 +125,18 @@ module Redlander
       end
     end
 
+    # Find a first statement matching the given criteria.
+    # (Shortcut for "find(:first, options)").
+    #
+    # @return [Statement, nil]
     def first(options = {})
       find(:first, options)
     end
 
+    # Find all statements matching the given criteria.
+    # (Shortcut for "find(:all, options)").
+    #
+    # @return [Array]
     def all(options = {})
       find(:all, options)
     end
