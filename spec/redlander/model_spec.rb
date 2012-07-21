@@ -9,6 +9,17 @@ describe Model do
 
     it { should be_an_instance_of(ModelProxy) }
 
+    context "for a non-countable storage" do
+      before do
+        subject.create(statement_attributes)
+        Redland.stub(:librdf_model_size => -1)
+      end
+
+      it "should return size derived from count" do
+        subject.size.should eql subject.count
+      end
+    end
+
     context "when enumerated" do
       context "without a block" do
         subject { model.statements.each }

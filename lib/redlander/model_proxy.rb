@@ -58,11 +58,7 @@ module Redlander
 
     def size
       s = Redland.librdf_model_size(@model.rdf_model)
-      if s < 0
-        raise RedlandError.new("Attempt to get size when using non-countable storage")
-      else
-        s
-      end
+      s < 0 ? count : s
     end
 
     # Enumerate (and filter) model statements.
