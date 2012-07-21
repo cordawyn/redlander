@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency("ffi", "~> 1.1")
   gem.add_development_dependency("rspec", "~> 2")
 
-  gem.licenses = ["LICENSE"]
+  gem.license = "The MIT License (MIT)"
   gem.extra_rdoc_files = ['README.rdoc']
   gem.has_rdoc = false
 end
