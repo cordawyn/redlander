@@ -7,8 +7,10 @@ Gem::Specification.new do |gem|
   gem.version     = ("$Release: #{Redlander::VERSION} $" =~ /[\.\d]+/) && $&
   gem.platform    = Gem::Platform::RUBY
   gem.homepage    = "https://github.com/cordawyn/redlander"
-  gem.summary     = "Advanced Redland bindings."
-  gem.description = "Advanced Redland bindings."
+  gem.summary     = "Advanced Ruby bindings for Redland runtime library (librdf)."
+  gem.description = <<HERE
+Redlander is Ruby bindings to Redland library (see http://librdf.org) written in C, which is used to manipulate RDF graphs. This is an alternative implementation of Ruby bindings (as opposed to the official bindings), aiming to be more intuitive, lightweight, high-performing and as bug-free as possible.
+HERE
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
