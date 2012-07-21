@@ -85,7 +85,8 @@ module Redlander
     #   So {#size} should be preferred to #count in terms of performance.
     #   However, for non-countable storages, {#size} falls back to
     #   using #count. Also, {#size} is not available for enumerables
-    #   (e.g. produced from {#each} (without a block) or otherwise).
+    #   (e.g. produced from {#each} (without a block) or otherwise) and
+    #   thus cannot be used to count "filtered" results.
     #
     # @return [Fixnum]
     def size
@@ -98,7 +99,7 @@ module Redlander
     #
     # @param [Statement, Hash, void] args
     #   if given Statement or Hash, filter the model statements
-    #   according to the specified pattern.
+    #   according to the specified pattern (see {#find} options).
     # @yieldparam [Statement]
     # @return [void]
     def each(*args)
@@ -129,7 +130,9 @@ module Redlander
     # Find statements satisfying the given criteria.
     #
     # @param [:first, :all] scope find just one or all matches
-    # @param [Hash<Symbol, Any>] options
+    # @param [Hash, Statement] options matching pattern made of:
+    #   - Hash with :subject, :predicate or :object nodes, or
+    #   - "patternized" Statement (nil nodes are matching anything).
     # @return [Statement, Array, nil]
     def find(scope, options = {})
       case scope
@@ -145,6 +148,7 @@ module Redlander
     # Find a first statement matching the given criteria.
     # (Shortcut for {#find}(:first, options)).
     #
+    # @param [Hash] options (see {#find})
     # @return [Statement, nil]
     def first(options = {})
       find(:first, options)
@@ -153,6 +157,7 @@ module Redlander
     # Find all statements matching the given criteria.
     # (Shortcut for {#find}(:all, options)).
     #
+    # @param [Hash] options (see {#find})
     # @return [Array<Statement>]
     def all(options = {})
       find(:all, options)
