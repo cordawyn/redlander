@@ -1,4 +1,3 @@
-require 'redlander/storage'
 require 'redlander/parsing'
 require 'redlander/serializing'
 require 'redlander/model_proxy'
@@ -13,14 +12,47 @@ module Redlander
     attr_reader :rdf_model
 
     # Create a new RDF model.
+    # (For available storage options see http://librdf.org/docs/api/redland-storage-modules.html)
     #
-    # @param [Hash] options (see Storage#initialize)
-    # @raise [RedlandError] if it fails to create a model.
+    # @param [Hash] options
+    # @option options [String] :storage
+    #   - "memory"     - default, if :storage option is omitted,
+    #   - "hashes"
+    #   - "file"       - memory model initialized from RDF/XML file,
+    #   - "uri"        - read-only memory model with URI provided in 'name' arg,
+    #   - "mysql"
+    #   - "sqlite"
+    #   - "postgresql"
+    #   - "tstore"
+    #   - "virtuoso"
+    #   - ... anything else that Redland can handle.
+    # @option options [String] :name storage identifier (DB file name or database name),
+    # @option options [String] :host database host name (for store types: :postgres, :mysql, :tstore),
+    # @option options [String] :port database host port (for store types: :postgres, :mysql, :tstore),
+    # @option options [String] :database database name (for store types: :postgres, :mysql, :tstore),
+    # @option options [String] :user database user name (for store types: :postgres, :mysql, :tstore),
+    # @option options [String] :password database user password (for store types: :postgres, :mysql, :tstore),
+    # @option options [String] :hash_type hash type (for store types: :bdb),
+    #   can be either 'memory' or 'bdb',
+    # @option options [String] :new force creation of a new store,
+    # @option options [String] :dir directory path (for store types: :hashes),
+    # @option options [String] :contexts support contexts (for store types: :hashes, :memory),
+    # @option options [String] :write allow writing data to the store (for store types: :hashes),
+    # @option options [...] ... other storage-specific options.
+    # @raise [RedlandError] if it fails to create a storage or a model.
     def initialize(options = {})
-      # TODO: get rid of Storage, use the low-level API
-      @storage = Storage.new(options)
+      options = options.dup
+      storage_type = options.delete(:storage) || "memory"
+      storage_name = options.delete(:name)
 
-      @rdf_model = Redland.librdf_new_model(Redlander.rdf_world, @storage.rdf_storage, "")
+      @rdf_storage = Redland.librdf_new_storage(Redlander.rdf_world,
+                                                storage_type.to_s,
+                                                storage_name.to_s,
+                                                Redlander.to_rdf_options(options))
+      raise RedlandError.new("Failed to initialize '#{storage_name}' storage (type: #{storage_type})") if @rdf_storage.null?
+      ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_storage(@rdf_storage) })
+
+      @rdf_model = Redland.librdf_new_model(Redlander.rdf_world, @rdf_storage, "")
       raise RedlandError.new("Failed to create a new model") if @rdf_model.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_model(@rdf_model) })
     end
