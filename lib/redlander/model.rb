@@ -49,11 +49,11 @@ module Redlander
                                                 storage_type.to_s,
                                                 storage_name.to_s,
                                                 Redlander.to_rdf_options(options))
-      raise RedlandError.new("Failed to initialize '#{storage_name}' storage (type: #{storage_type})") if @rdf_storage.null?
+      raise RedlandError, "Failed to initialize '#{storage_name}' storage (type: #{storage_type})" if @rdf_storage.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_storage(@rdf_storage) })
 
       @rdf_model = Redland.librdf_new_model(Redlander.rdf_world, @rdf_storage, "")
-      raise RedlandError.new("Failed to create a new model") if @rdf_model.null?
+      raise RedlandError, "Failed to create a new model" if @rdf_model.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_model(@rdf_model) })
     end
 

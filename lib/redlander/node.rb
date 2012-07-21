@@ -35,7 +35,7 @@ module Redlander
                     @datatype = Uri.new(XmlSchema.datatype_of(arg))
                     Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, @datatype.rdf_uri)
                   end
-      raise RedlandError.new("Failed to create a new node") if @rdf_node.null?
+      raise RedlandError, "Failed to create a new node" if @rdf_node.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_node(@rdf_node) })
     end
 

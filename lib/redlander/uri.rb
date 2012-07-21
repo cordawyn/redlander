@@ -7,7 +7,8 @@ module Redlander
     # Create Uri.
     #
     # @param [URI, String] source String or URI object to wrap into Uri.
-    # @raise [RedlandError] if it fails to create Uri.
+    # @raise [NotImplementedError] if cannot create a Uri from the given source.
+    # @raise [RedlandError] if it fails to create a Uri.
     def initialize(source)
       @rdf_uri = case source
                  when FFI::Pointer
@@ -15,10 +16,9 @@ module Redlander
                  when URI, String
                    Redland.librdf_new_uri(Redlander.rdf_world, source.to_s)
                  else
-                   # TODO
-                   raise NotImplementedError.new
+                   raise NotImplementedError, "Cannot create Uri from '#{source.inspect}'"
                  end
-      raise RedlandError.new("Failed to create URI from '#{source.inspect}'") if @rdf_uri.null?
+      raise RedlandError, "Failed to create URI from '#{source.inspect}'" if @rdf_uri.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_uri(@rdf_uri) })
     end
 

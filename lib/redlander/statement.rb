@@ -10,7 +10,8 @@ module Redlander
     # @option source [Node, String, URI, Uri, nil] :subject
     # @option source [Node, String, URI, Uri, nil] :predicate
     # @option source [Node, String, URI, Uri, nil] :object
-    # @raise [RedlandError] if it fails to create a Statement
+    # @raise [NotImplementedError] if cannot create a Statement from the given source.
+    # @raise [RedlandError] if it fails to create a Statement.
     def initialize(source = {})
       @rdf_statement = case source
                        when FFI::Pointer
@@ -22,10 +23,9 @@ module Redlander
                          o = rdf_node_from(source[:object])
                          Redland.librdf_new_statement_from_nodes(Redlander.rdf_world, s, p, o)
                        else
-                         # TODO
-                         raise NotImplementedError.new
+                         raise NotImplementedError, "Cannot create Statement from '#{source.inspect}'"
                        end
-      raise RedlandError.new("Failed to create a new statement") if @rdf_statement.null?
+      raise RedlandError, "Failed to create a new statement" if @rdf_statement.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_statement(@rdf_statement) })
     end
 
