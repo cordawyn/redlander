@@ -1,7 +1,12 @@
 module Redlander
   class Uri
+    # @api private
     attr_reader :rdf_uri
 
+    # Create Uri.
+    #
+    # @param [URI, String] source String or URI object to wrap into Uri.
+    # @raise [RedlandError] if it fails to create Uri.
     def initialize(source)
       @rdf_uri = case source
                  when FFI::Pointer
@@ -28,7 +33,7 @@ module Redlander
 
     private
 
-    # :nodoc:
+    # @api private
     def wrap(u)
       if u.null?
         raise RedlandError.new("Failed to create URI")

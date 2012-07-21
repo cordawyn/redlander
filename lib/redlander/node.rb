@@ -1,5 +1,6 @@
 module Redlander
   class Node
+    # @api private
     attr_reader :rdf_node
 
     # Datatype URI for the literal node, or nil
@@ -13,10 +14,9 @@ module Redlander
     #     it must be an instance of URI. Otherwise it is treated as a string literal.
     #   - nil (or absent) - to create a blank node,
     #   - any other Ruby object, which can be coerced into a literal.
-    #   If nothing else, a RedlandError is thrown.
-    #
     # @param [Hash] options
-    #   - :blank_id - (optional) ID to use for a blank node
+    # @option options [String] :blank_id optional ID to use for a blank node.
+    # @raise [RedlandError] if it fails to create a node from the given args.
     def initialize(arg = nil, options = {})
       @rdf_node = case arg
                   when FFI::Pointer
@@ -38,21 +38,31 @@ module Redlander
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_node(@rdf_node) })
     end
 
+    # Check whether the node is a resource (identified by a URI)
+    #
+    # @return [Boolean]
     def resource?
       Redland.librdf_node_is_resource(@rdf_node) != 0
     end
 
     # Return true if node is a literal.
+    #
+    # @return [Boolean]
     def literal?
       Redland.librdf_node_is_literal(@rdf_node) != 0
     end
 
     # Return true if node is a blank node.
+    #
+    # @return [Boolean]
     def blank?
       Redland.librdf_node_is_blank(@rdf_node) != 0
     end
 
     # Equivalency. Only works for comparing two Nodes.
+    #
+    # @param [Node] other_node Node to be compared with.
+    # @return [Boolean]
     def eql?(other_node)
       Redland.librdf_node_equals(@rdf_node, other_node.rdf_node) != 0
     end
@@ -63,11 +73,18 @@ module Redlander
     end
 
     # Convert this node to a string (with a datatype suffix).
+    #
+    # @return [String]
     def to_s
       Redland.librdf_node_to_string(@rdf_node)
     end
 
-    # Internal URI of the Node
+    # Internal URI of the Node.
+    #
+    # Returns the datatype URI for literal nodes,
+    # nil for blank nodes.
+    #
+    # @return [Uri, nil]
     def uri
       if resource?
         Uri.new(Redland.librdf_node_get_uri(@rdf_node))
@@ -79,6 +96,11 @@ module Redlander
     end
 
     # Value of the literal node as a Ruby object instance.
+    #
+    # Returns an instance of URI for resource nodes,
+    # "blank identifier" for blank nodes.
+    #
+    # @return [URI, Any]
     def value
       if resource?
         URI.parse(uri.to_s)
@@ -90,7 +112,7 @@ module Redlander
 
     private
 
-    # :nodoc:
+    # @api private
     def wrap(n)
       if n.null?
         raise RedlandError.new("Failed to create a new node")

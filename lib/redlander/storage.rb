@@ -1,8 +1,11 @@
 module Redlander
   class Storage
+    # @api private
     attr_reader :rdf_storage
 
     # Creates a store of the given type
+    #
+    # @param [Hash] options
     #
     # Store types (:storage option) are:
     #   :memory

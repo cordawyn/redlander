@@ -1,13 +1,15 @@
 module Redlander
   class Statement
+    # @api private
     attr_reader :rdf_statement
 
     # Create an RDF statement.
-    # Source can be:
-    #   Hash, where
-    #     :subject
-    #     :predicate
-    #     :object
+    #
+    # @param [Hash] source
+    # @option source [Node, String, URI, Uri, nil] :subject
+    # @option source [Node, String, URI, Uri, nil] :predicate
+    # @option source [Node, String, URI, Uri, nil] :object
+    # @raise [RedlandError] if it fails to create a Statement
     def initialize(source = {})
       @rdf_statement = case source
                        when FFI::Pointer
@@ -26,32 +28,50 @@ module Redlander
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_statement(@rdf_statement) })
     end
 
+    # Subject of the statment.
+    #
+    # @return [Node, nil]
     def subject
       rdf_node = Redland.librdf_statement_get_subject(@rdf_statement)
       rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
+    # Predicate of the statement.
+    #
+    # @return [Node, nil]
     def predicate
       rdf_node = Redland.librdf_statement_get_predicate(@rdf_statement)
       rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
+    # Object of the statement.
+    #
+    # @return [Node, nil]
     def object
       rdf_node = Redland.librdf_statement_get_object(@rdf_statement)
       rdf_node.null? ? nil : Node.new(rdf_node)
     end
 
-    # set the subject of the statement
+    # Set the subject of the statement
+    #
+    # @param [Node, nil] node
+    # @return [void]
     def subject=(node)
       Redland.librdf_statement_set_subject(@rdf_statement, rdf_node_from(node))
     end
 
-    # set the predicate of the statement
+    # Set the predicate of the statement
+    #
+    # @param [Node, nil] node
+    # @return [void]
     def predicate=(node)
       Redland.librdf_statement_set_predicate(@rdf_statement, rdf_node_from(node))
     end
 
-    # set the object of the statement
+    # Set the object of the statement
+    #
+    # @param [Node, nil] node
+    # @return [void]
     def object=(node)
       Redland.librdf_statement_set_object(@rdf_statement, rdf_node_from(node))
     end
@@ -74,7 +94,7 @@ module Redlander
 
     private
 
-    # :nodoc:
+    # @api private
     def wrap(s)
       if s.null?
         raise RedlandError.new("Failed to create a new statement")
@@ -85,6 +105,7 @@ module Redlander
 
     # Create a Node from the source
     # and get its rdf_node, or return nil
+    # @api private
     def rdf_node_from(source)
       case source
       when NilClass

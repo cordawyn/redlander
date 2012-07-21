@@ -16,3 +16,5 @@ vendor/
 tmp/
 .rbx
 .bundle
+.yardoc/
+doc/

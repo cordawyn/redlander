@@ -8,11 +8,14 @@ module Redlander
     end
 
     # Add a statement to the model.
-    # It must be a complete statement - all of subject, predicate, object parts must be present.
-    # Only statements that are legal RDF can be added.
-    # If the statement already exists in the model, it is not added.
     #
-    # @return [true, false]
+    # @note
+    #   All of subject, predicate, object nodes of the statement must be present.
+    #   Only statements that are legal RDF can be added.
+    #   If the statement already exists in the model, it is not added.
+    #
+    # @param [Statement] statement
+    # @return [Boolean]
     def add(statement)
       Redland.librdf_model_add_statement(@model.rdf_model, statement.rdf_statement).zero?
     end
@@ -22,14 +25,13 @@ module Redlander
     # or delete all statements matching the given criteria.
     #
     # @param [Statement, Hash] source
-    #   - for a Hash all keys are optional:
-    #     :subject
-    #     :predicate
-    #     :object
-    # A missing hash key or a statement with a nil node
-    # matches all corresponding nodes in the statements.
-    #
-    # @return [true, false]
+    #   Statement or Hash of nodes with the roles specified.
+    #   A missing hash key or a statement with a nil node
+    #   matches statements with any value for that node.
+    # @option source [Node, Uri, URI, String, nil] :subject
+    # @option source [Node, Uri, URI, String, nil] :predicate
+    # @option source [Node, Uri, URI, String, nil] :object
+    # @return [Boolean]
     def delete(source)
       statement = case source
                   when Statement
@@ -45,32 +47,33 @@ module Redlander
 
     # Create a statement and add it to the model.
     #
-    # Options are:
-    #   :subject, :predicate, :object,
-    # (see Statement.new for option explanations).
-    #
+    # @param [Hash] source subject, predicate and object nodes
+    #   of the statement to be created (see Statement#initialize).
+    # @option source [Node, Uri, URI, String, nil] :subject
+    # @option source [Node, Uri, URI, String, nil] :predicate
+    # @option source [Node, Uri, URI, String, nil] :object
     # @return [Statement, nil]
-    def create(options = {})
-      statement = Statement.new(options)
+    def create(source)
+      statement = Statement.new(source)
       add(statement) ? statement : nil
     end
 
     # Checks whether there are no statements in the model.
     #
-    # @return [true, false]
+    # @return [Boolean]
     def empty?
       size.zero?
     end
 
     # Size of the model in statements.
     #
-    # Note the difference between #size and #count:
-    # While #count must iterate across all statements in the model,
-    # #size tries to use a more efficient C implementation.
-    # So #size should be preferred to #count in terms of performance.
-    # However, for non-countable storages, #size falls back to
-    # using #count. Also, #size is not available for enumerables
-    # (e.g. produced from #each (without a block) or otherwise).
+    # @note
+    #   While #count must iterate across all statements in the model,
+    #   {#size} tries to use a more efficient C implementation.
+    #   So {#size} should be preferred to #count in terms of performance.
+    #   However, for non-countable storages, {#size} falls back to
+    #   using #count. Also, {#size} is not available for enumerables
+    #   (e.g. produced from {#each} (without a block) or otherwise).
     #
     # @return [Fixnum]
     def size
@@ -79,12 +82,13 @@ module Redlander
     end
 
     # Enumerate (and filter) model statements.
-    #
-    # @param [Statement, Hash, nil] *args
-    #   - if given Statement or Hash, filter the model statements
-    #     according to the specified pattern.
-    #
     # If given no block, returns Enumerator.
+    #
+    # @param [Statement, Hash, void] args
+    #   if given Statement or Hash, filter the model statements
+    #   according to the specified pattern.
+    # @yieldparam [Statement]
+    # @return [void]
     def each(*args)
       if block_given?
         rdf_stream =
@@ -111,9 +115,10 @@ module Redlander
     end
 
     # Find statements satisfying the given criteria.
-    # Scope can be:
-    #   :all
-    #   :first
+    #
+    # @param [Symbol[:first, :all]] scope find just one or all matches
+    # @param [Hash<Symbol, Any>] options
+    # @return [Statement, Array, nil]
     def find(scope, options = {})
       case scope
       when :first
@@ -126,7 +131,7 @@ module Redlander
     end
 
     # Find a first statement matching the given criteria.
-    # (Shortcut for "find(:first, options)").
+    # (Shortcut for {#find}(:first, options)).
     #
     # @return [Statement, nil]
     def first(options = {})
@@ -134,9 +139,9 @@ module Redlander
     end
 
     # Find all statements matching the given criteria.
-    # (Shortcut for "find(:all, options)").
+    # (Shortcut for {#find}(:all, options)).
     #
-    # @return [Array]
+    # @return [Array<Statement>]
     def all(options = {})
       find(:all, options)
     end

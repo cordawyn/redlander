@@ -4,25 +4,29 @@ module Redlander
   module Parsing
     # Core parsing method for non-streams
     #
-    # @param [String] content
-    #    Can be a String,
-    #      causing the statements to be extracted
-    #      directly from it,
-    #    or URI (or Redlander::Uri)
-    #      causing the content to be first pulled
-    #      from the specified URI (or a local file,
-    #      if URI schema == "file:")
-    # @param [Hash{Symbol => String}] options
-    #   :name  - name of the parser to use
-    #   :mime_type - MIME type of the syntax, if applicable
-    #   :type_uri - URI of syntax, if applicable (String, URI or Redlander::Uri)
-    #   :base_uri - base URI (String, URI or Redlander::Uri),
-    #               required for URI parsing (see "content" parameter)
+    # @note
+    #   If a block is given, the extracted statements will be yielded into
+    #   the block and inserted into the model depending on the output
+    #   of the block (if true, the statement will be added,
+    #   if false, the statement will not be added).
     #
-    # If a block is given, the extracted statements will be yielded into
-    # the block and inserted into the model depending on the output
-    # of the block (if true, the statement will be added,
-    # if false, the statement will not be added).
+    # @param [String, URI, Uri] content
+    #   - Can be a String,
+    #     causing the statements to be extracted
+    #     directly from it, or
+    #   - URI (or Redlander::Uri)
+    #     causing the content to be first pulled
+    #     from the specified URI (or a local file,
+    #     if URI schema == "file:")
+    # @param [Hash] options
+    # @option options [String] :name name of the parser to use,
+    # @option options [String] :mime_type MIME type of the syntax, if applicable,
+    # @option options [String, URI, Uri] :type_uri URI of syntax, if applicable,
+    # @option options [String, URI, Uri] :base_uri base URI,
+    #   to be applied to the nodes with relative URIs.
+    # @yieldparam [Statement]
+    # @raise [RedlandError] if it fails to create a parser or stream
+    # @return [void]
     def from(content, options = {})
       name = options[:name].to_s
       mime_type = options[:mime_type] && options[:mime_type].to_s
@@ -70,18 +74,42 @@ module Redlander
       end
     end
 
+    # Parse input in RDF/XML format.
+    # Shortcut for {#from}(content, :name => "rdfxml").
+    #
+    # @param (see #from)
+    # @yieldparam [Statement]
+    # @return [void]
     def from_rdfxml(content, options = {}, &block)
       from(content, options.merge(:name => "rdfxml"), &block)
     end
 
+    # Parse input in NTriples format.
+    # Shortcut for {#from}(content, :name => "ntriples").
+    #
+    # @param (see #from)
+    # @yieldparam [Statement]
+    # @return [void]
     def from_ntriples(content, options = {}, &block)
       from(content, options.merge(:name => "ntriples"), &block)
     end
 
+    # Parse input in Turtls format.
+    # Shortcut for {#from}(content, :name => "turtle").
+    #
+    # @param (see #from)
+    # @yieldparam [Statement]
+    # @return [void]
     def from_turtle(content, options = {}, &block)
       from(content, options.merge(:name => "turtle"), &block)
     end
 
+    # Parse input as stream from URI (or File)
+    #
+    # @param [URI, Uri, String] uri URI of the endpoint or file path
+    # @param [Hash] options (see {#from})
+    # @yieldparam [Statement]
+    # @return [void]
     def from_uri(uri, options = {}, &block)
       if uri.is_a?(String)
         uri = URI.parse(uri)
