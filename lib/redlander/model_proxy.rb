@@ -1,9 +1,6 @@
-require 'redlander/stream'
-require 'redlander/stream_enumerator'
-
 module Redlander
   class ModelProxy
-    include StreamEnumerator
+    include Enumerable
 
     def initialize(model)
       @model = model
@@ -68,18 +65,48 @@ module Redlander
       end
     end
 
+    # Enumerate (and filter) model statements.
+    #
+    # @param [Statement, Hash, NilClass] *args
+    #   - if given Statement or Hash, filter the model statements
+    #     according to the specified pattern.
+    #
+    # If given no block, returns Enumerator.
+    def each(*args)
+      if block_given?
+        rdf_stream =
+          if args.empty?
+            Redland.librdf_model_as_stream(@model.rdf_model)
+          else
+            pattern = Statement.new(args.first)
+            Redland.librdf_model_find_statements(@model.rdf_model, pattern.rdf_statement)
+          end
+        raise RedlandError, "Failed to create a new stream" if rdf_stream.null?
+
+        begin
+          while Redland.librdf_stream_end(rdf_stream).zero?
+            statement = Statement.new(Redland.librdf_stream_get_object(rdf_stream))
+            yield statement
+            Redland.librdf_stream_next(rdf_stream)
+          end
+        ensure
+          Redland.librdf_free_stream(rdf_stream)
+        end
+      else
+        enum_for(:each, *args)
+      end
+    end
+
     # Find statements satisfying the given criteria.
     # Scope can be:
     #   :all
     #   :first
-    def find(scope, options = {}, &block)
-      stream = Stream.new(@model, Statement.new(options))
-
+    def find(scope, options = {})
       case scope
       when :first
-        stream.current
+        each(options).first
       when :all
-        stream.tail
+        each(options).to_a
       else
         raise RedlandError.new("Invalid search scope '#{scope}' specified.")
       end
@@ -91,13 +118,6 @@ module Redlander
 
     def all(options = {})
       find(:all, options)
-    end
-
-
-    private
-
-    def reset_stream
-      @stream = Stream.new(@model)
     end
   end
 end

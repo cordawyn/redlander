@@ -1,5 +1,3 @@
-require 'redlander/stream'
-
 module Redlander
   class Statement
     attr_reader :rdf_statement
@@ -10,14 +8,10 @@ module Redlander
     #     :subject
     #     :predicate
     #     :object
-    #   Stream, so that a statement is extracted from its current position
     def initialize(source = {})
       @rdf_statement = case source
                        when FFI::Pointer
                          wrap(source)
-                       when Stream
-                         # Pull a (current) statement from the stream
-                         wrap(Redland.librdf_stream_get_object(source.rdf_stream))
                        when Hash
                          # Create a new statement from nodes
                          s = rdf_node_from(source[:subject])

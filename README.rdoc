@@ -43,7 +43,7 @@ Finding statements:
 
   m.statements.find(:first, :object => "subject!")
   m.statements.all(:object => "another label")
-  m.statements.find(:all, :object => "subject!").each { |statement|
+  m.statements.each(:object => "subject!") { |statement|
     puts statement.subject
   }
 
