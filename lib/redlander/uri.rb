@@ -1,4 +1,5 @@
 module Redlander
+  # Uri (for internal use mostly)
   class Uri
     # @api private
     attr_reader :rdf_uri

@@ -9,9 +9,10 @@ require 'redlander/node'
 require 'redlander/model'
 require 'redlander/statement'
 
+# Main Redlander namespace
 module Redlander
-
   class << self
+    # @api private
     def rdf_world
       unless @rdf_world
         @rdf_world = Redland.librdf_new_world
@@ -22,13 +23,14 @@ module Redlander
       @rdf_world
     end
 
+    # @api private
     # Convert options hash into a string for librdf.
     # What it does:
     #   1) Convert boolean values into 'yes/no' values
     #   2) Change underscores in key names into dashes ('dhar_ma' => 'dhar-ma')
     #   3) Join all options as "key='value'" pairs in a comma-separated string
     #
-    # E.g.:
+    # @example
     #   to_rdf_options {:key => true, "key_board" => 3}
     #   # => "key='yes',key-board='3'"
     def to_rdf_options(options = {})

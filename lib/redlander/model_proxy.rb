@@ -1,4 +1,16 @@
 module Redlander
+  # Proxy between model and its statements,
+  # allowing to scope actions on statements
+  # within a certain model.
+  #
+  # @example
+  #   model = Redlander::Model.new
+  #   model.statements
+  #   # => ModelProxy
+  #   model.statements.add(...)
+  #   model.statements.each(...)
+  #   model.statements.find(...)
+  #   # etc...
   class ModelProxy
     include Enumerable
 

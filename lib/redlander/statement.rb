@@ -1,4 +1,5 @@
 module Redlander
+  # RDF statement
   class Statement
     # @api private
     attr_reader :rdf_statement

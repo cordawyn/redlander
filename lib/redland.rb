@@ -1,7 +1,8 @@
+# @api private
 # FFI bindings
-
 module Redland
-  if !defined?(RUBY_ENGINE) || RUBY_ENGINE=='ruby'
+  # Handling FFI difference between MRI and Rubinius
+  if !defined?(RUBY_ENGINE) || RUBY_ENGINE == 'ruby'
     require 'ffi'
     extend FFI::Library
     ffi_lib "rdf.so.0"

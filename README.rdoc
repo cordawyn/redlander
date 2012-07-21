@@ -1,6 +1,6 @@
 = Redlander
 
-Redlander is Ruby bindings to Redland library (see http://librdf.org). This is an alternative implementation of the bindings, aiming to be more intuitive, lightweight and less buggy.
+Redlander is Ruby bindings to Redland library (see http://librdf.org). This is an alternative implementation of the bindings, aiming to be more intuitive, lightweight and as bug-free as possible.
 
 = Installing
 

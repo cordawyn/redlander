@@ -1,4 +1,5 @@
 module Redlander
+  # RDF node (usually, a part of an RDF statement)
   class Node
     # @api private
     attr_reader :rdf_node
