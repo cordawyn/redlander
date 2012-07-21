@@ -1,10 +1,7 @@
 require 'redlander/stream'
-require "redlander/error_container"
 
 module Redlander
   class Statement
-    include ErrorContainer
-
     attr_reader :rdf_statement
 
     # Create an RDF statement.
@@ -52,23 +49,17 @@ module Redlander
 
     # set the subject of the statement
     def subject=(node)
-      binding_to_statement(node) {
-        Redland.librdf_statement_set_subject(@rdf_statement, node.rdf_node)
-      }
+      Redland.librdf_statement_set_subject(@rdf_statement, rdf_node_from(node))
     end
 
     # set the predicate of the statement
     def predicate=(node)
-      binding_to_statement(node) {
-        Redland.librdf_statement_set_predicate(@rdf_statement, node.rdf_node)
-      }
+      Redland.librdf_statement_set_predicate(@rdf_statement, rdf_node_from(node))
     end
 
     # set the object of the statement
     def object=(node)
-      binding_to_statement(node) {
-        Redland.librdf_statement_set_object(@rdf_statement, node.rdf_node)
-      }
+      Redland.librdf_statement_set_object(@rdf_statement, rdf_node_from(node))
     end
 
     def eql?(other_statement)
@@ -86,13 +77,6 @@ module Redlander
       Redland.librdf_statement_to_string(@rdf_statement)
     end
 
-    # A valid statement satisfies the following:
-    # URI or blank subject, URI predicate and URI or blank or literal object (i.e. anything).
-    def valid?
-      attributes_satisfy? ? errors.clear : errors.add("is invalid")
-      errors.empty?
-    end
-
 
     private
 
@@ -102,21 +86,6 @@ module Redlander
         raise RedlandError.new("Failed to create a new statement")
       else
         Redland.librdf_new_statement_from_statement(s)
-      end
-    end
-
-    def attributes_satisfy?
-      !subject.nil? && (subject.resource? || subject.blank?) &&
-        !predicate.nil? && predicate.resource? &&
-        !object.nil?
-    end
-
-    def binding_to_statement(node)
-      if node.frozen?
-        raise RedlandError.new("Cannot assign a bound node")
-      else
-        node.freeze
-        yield
       end
     end
 

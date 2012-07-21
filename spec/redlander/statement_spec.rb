@@ -1,67 +1,47 @@
 require "spec_helper"
 
 describe Statement do
+  subject { described_class.new(statement_attributes) }
 
-  it "should be created with default values" do
-    statement = nil
-    lambda { statement = Statement.new }.should_not raise_exception
-    statement.subject.should be_nil
-    statement.predicate.should be_nil
-    statement.object.should be_nil
-  end
+  context "with default values" do
+    subject { described_class.new }
 
-  it "should be created with the given values" do
-    statement = create_statement
-    statement.subject.should be_an_instance_of(Node)
-    statement.predicate.should be_an_instance_of(Node)
-    statement.object.should be_an_instance_of(Node)
-  end
+    it "should have nil subject" do
+      subject.subject.should be_nil
+    end
 
-  it "should have proper attributes" do
-    statement = create_statement
-    statement.subject.value.to_s.should eql('http://example.com/concepts#subject')
-    statement.predicate.value.to_s.should eql('http://example.com/concepts#label')
-    statement.object.value.should eql('subject!')
-  end
+    it "should have nil predicate" do
+      subject.predicate.should be_nil
+    end
 
-  it do
-    statement = Statement.new
-    lambda {
-      statement.should_not be_valid
-    }.should change(statement.errors, :size).by(1)
-  end
+    it "should have nil object" do
+      subject.object.should be_nil
+    end
 
-  it do
-    create_statement.should be_valid
-  end
-
-  [:subject, :predicate, :object].each do |attribute|
-    it "should be assigned a #{attribute}" do
-      statement = Statement.new
-      attr = Node.new(statement_attributes[attribute])
-      lambda {
-        statement.send("#{attribute}=", attr)
-      }.should change(statement, attribute).from(nil).to(attr)
+    [:subject, :predicate, :object].each do |attribute|
+      it "should be assigned a #{attribute}" do
+        attr = Node.new(statement_attributes[attribute])
+        expect {
+          subject.send("#{attribute}=", attr)
+        }.to change(subject, attribute).from(nil).to(attr)
+      end
     end
   end
 
-  it "should not be assigned the same attribute twice" do
-    statement = Statement.new
-    object = "object!"
-    lambda {
-      2.times do
-        statement.object = object
-      end
-    }.should raise_exception
-    object.should be_frozen
+  it "should be created with the given values" do
+    subject.subject.should be_an_instance_of(Node)
+    subject.predicate.should be_an_instance_of(Node)
+    subject.object.should be_an_instance_of(Node)
+  end
+
+  it "should have proper attributes" do
+    subject.subject.value.to_s.should eql('http://example.com/concepts#subject')
+    subject.predicate.value.to_s.should eql('http://example.com/concepts#label')
+    subject.object.value.should eql('subject!')
   end
 
 
   private
-
-  def create_statement
-    Statement.new(statement_attributes)
-  end
 
   def statement_attributes
     s = URI.parse('http://example.com/concepts#subject')
@@ -73,5 +53,4 @@ describe Statement do
       :object => o
     }
   end
-
 end

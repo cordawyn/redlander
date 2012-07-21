@@ -55,16 +55,33 @@ describe Model do
       end
     end
 
-    it "should be created in the model" do
-      expect {
-        subject.create(statement_attributes)
-      }.to change(subject, :size).by(1)
-    end
+    context "adding" do
+      context "via #create" do
+        it "should be created in the model" do
+          expect { subject.create(statement_attributes) }.to change(subject, :size).by(1)
+        end
 
-    it "should be added to" do
-      statement = Statement.new(statement_attributes)
-      lambda { subject.add(statement) }.should change(subject, :size).by(1)
-      subject.should include(statement)
+        it "should not add duplicate statements" do
+          expect {
+            2.times { subject.create(statement_attributes) }
+          }.to change(subject, :size).by(1)
+        end
+      end
+
+      context "via #add" do
+        before { @statement = Statement.new(statement_attributes) }
+
+        it "should be added to" do
+          expect { subject.add(@statement) }.to change(subject, :size).by(1)
+          subject.should include(@statement)
+        end
+
+        it "should not add duplicate statements" do
+          expect {
+            2.times { subject.add(@statement) }
+          }.to change(subject, :size).by(1)
+        end
+      end
     end
 
     it "should be removed from" do

@@ -16,9 +16,7 @@ module Redlander
     #
     # Returns true on success or false on failure.
     def add(statement)
-      if statement.valid?
-        Redland.librdf_model_add_statement(@model.rdf_model, statement.rdf_statement).zero?
-      end
+      Redland.librdf_model_add_statement(@model.rdf_model, statement.rdf_statement).zero?
     end
     alias_method :<<, :add
 
