@@ -8,7 +8,7 @@ Installing Redlander is simple:
 
   $ gem install redlander
 
-Note, that you will have to install Redlander (librdf) for Redlander to work.
+Note, that you will have to install Redland runtime library (librdf) for Redlander to work.
 
 = Usage
 
@@ -47,15 +47,15 @@ Finding statements:
     puts statement.subject
   }
 
-Note that "m.statements.each" is "lazy", while "m.statements.all" (and other finders) are not.
+Note that "m.statements.each" is "lazy", while "m.statements.all" (and other finders) is not.
 
-For more details refer to the documentation of Model, Statement, Storage and other classes of Redlander.
+For more details refer to YARD documentation of Redlander.
 
 = Exceptions
 
 If anything unexpected happens, Redlander raises RedlandError.
 
-= Authors
+= Authors and Contributors
 
 Slava Kravchenko <slava.kravchenko@gmail.com>
 
