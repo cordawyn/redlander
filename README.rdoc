@@ -45,13 +45,19 @@ Most of Redlander functionality is accessable via these statements. The API is a
 
 Finding statements:
 
-  m.statements.find(:first, :object => "subject!")
-  m.statements.all(:object => "another label")
-  m.statements.each(:object => "subject!") { |statement|
-    puts statement.subject
-  }
+  $ m.statements.find(:first, :object => "subject!")
+  $ m.statements.all(:object => "another label")
+  $ m.statements.each(:object => "subject!") { |statement|
+      puts statement.subject
+    }
 
 Note that "m.statements.each" is "lazy", while "m.statements.all" (and other finders) is not.
+
+You can access the subject, predicate or object of a statement:
+
+  $ m.statements.first.subject  # => (Redlander::Node)
+
+Please refer to Redlander::Node API doc for details.
 
 == Parsing Input
 
@@ -72,6 +78,15 @@ If you want to get the data from a local file, you can use "file://" schema for 
 
 Most frequently used parsing methods are aliased to save you some typing:
 "from_rdfxml", "from_ntriples", "from_turtle", "from_uri/from_file".
+
+Finally, you can filter the parsed input to prevent certain statements from getting into your model:
+
+  $ m.from_turtle(data) do |statement|
+      statement.object.value == "good"
+    end
+
+If the block returns "false", the statement will not be added to the model.
+The above example will add only statements having "literal" objects with a value of "good".
 
 == Serializing Model
 
