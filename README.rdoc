@@ -12,12 +12,16 @@ Note, that you will have to install Redland runtime library (librdf) for Redland
 
 = Usage
 
+This README outlines most obvious use cases. For more details please refer to YARD documentation of Redlander.
+
 To start doing anything useful with Redlander, you need to initialize a model first:
 
   $ m = Redlander::Model.new
 
 This creates a model where all RDF statements are stored in the memory. Depending on the selected storage you may need to supply extra parameters like :user or :password. Look-up the options for Storage.initialize_storage method for the list of storage options.
 Naturally, you don't need to create a model if you just want to play around with independent statements, nodes and the like.
+
+== RDF Statements
 
 Now that you have created a model, you can access its RDF statements:
 
@@ -49,7 +53,61 @@ Finding statements:
 
 Note that "m.statements.each" is "lazy", while "m.statements.all" (and other finders) is not.
 
-For more details refer to YARD documentation of Redlander.
+== Parsing Input
+
+You can fill your model with statements by parsing some external sources like plain or streamed data.
+
+  $ data = File.read("data.xml")
+  $ m.from(data, :format => "rdfxml")
+
+If the input is too large, you may prefer streaming it:
+
+  $ source = URI("http://example.com/data.nt")
+  $ m.from(source, :format => "ntriples")
+
+If you want to get the data from a local file, you can use "file://" schema for your URI
+(or Redlander::Uri) or use "from_file" method with a local file name (without schema):
+
+  $ m.from_file("../data.ttl", :format => "turtle")
+
+Most frequently used parsing methods are aliased to save you some typing:
+"from_rdfxml", "from_ntriples", "from_turtle", "from_uri/from_file".
+
+== Serializing Model
+
+Naturally, you can convert your model into a portable syntax:
+
+  $ m.to(:format => "rdfxml") # => RDF/XML output
+
+There are aliases as well: "to_rdfxml", "to_dot", etc.
+
+You can also dump the output directly into a local file:
+
+  $ m.to_file("data.nt", :format => "ntriples")
+
+== Transactions
+
+It is possible to wrap all changes you perform on a model in a transaction,
+if transactions are supported by the backend storage. If they are not supported,
+all changes will be instantaneous.
+
+  $ m.transaction { m.statements.delete_all }
+
+There are also dedicated methods to start, commit and rollback a transaction,
+should you not be able to explicitly wrap your changes in a block:
+
+  $ m.transaction_start
+  $ m.delete_all
+  $ if lucky?
+      m.transaction_commit
+    else
+      m.transaction_rollback
+    end
+
+All the above methods have their "banged" counterparts ("transaction_start!",
+"transaction_commit!" and "transaction_rollback!") that would raise RedlandError
+in case of an error.
+
 
 = Exceptions
 
