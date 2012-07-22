@@ -180,6 +180,11 @@ describe Model do
   end
 
   describe "deserialization" do
+    it "should return an instance of Model" do
+      source = Uri.new("file://#{Redlander.fixture_path('doap.rdf')}")
+      subject.from(source, :format => "rdfxml").should be_a Model
+    end
+
     context "from RDF/XML" do
       before { @filename = Redlander.fixture_path("doap.rdf") }
 
