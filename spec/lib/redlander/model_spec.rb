@@ -66,7 +66,7 @@ describe Model do
       end
     end
 
-    context "adding" do
+    context "when adding" do
       context "via #create" do
         it "should be created in the model" do
           expect { subject.create(statement_attributes) }.to change(subject, :size).by(1)
@@ -82,7 +82,7 @@ describe Model do
       context "via #add" do
         before { @statement = Statement.new(statement_attributes) }
 
-        it "should be added to" do
+        it "should be added to the model" do
           expect { subject.add(@statement) }.to change(subject, :size).by(1)
           subject.should include(@statement)
         end
@@ -95,12 +95,21 @@ describe Model do
       end
     end
 
-    it "should be removed from" do
-      statement = subject.create(statement_attributes)
-      lambda {
-        subject.delete(statement)
-      }.should change(subject, :size).by(-1)
-      subject.should_not include(statement)
+    context "when deleting" do
+      before { @statement = subject.create(statement_attributes) }
+
+      it "should be removed from the model" do
+        expect { subject.delete(@statement) }.to change(subject, :size).by(-1)
+        subject.should_not include(@statement)
+      end
+
+      describe "all statements" do
+        before { subject.create(statement_attributes.merge(:object => "another one")) }
+
+        it "should completely wipe the model" do
+          expect { subject.delete_all }.to change(subject, :size).from(2).to(0)
+        end
+      end
     end
 
 

@@ -33,28 +33,23 @@ module Redlander
     end
     alias_method :<<, :add
 
-    # Delete a statement from the model,
-    # or delete all statements matching the given criteria.
+    # Delete a statement from the model.
     #
-    # @param [Statement, Hash] source
-    #   Statement or Hash of nodes with the roles specified.
-    #   A missing hash key or a statement with a nil node
-    #   matches statements with any value for that node.
-    # @option source [Node, Uri, URI, String, nil] :subject
-    # @option source [Node, Uri, URI, String, nil] :predicate
-    # @option source [Node, Uri, URI, String, nil] :object
+    # @note
+    #   All of subject, predicate, object nodes of the statement must be present.
+    #
+    # @param [Statement] statement
     # @return [Boolean]
-    def delete(source)
-      statement = case source
-                  when Statement
-                    source
-                  when Hash
-                    Statement.new(source)
-                  else
-                    # TODO
-                    raise NotImplementedError.new
-                  end
+    def delete(statement)
       Redland.librdf_model_remove_statement(@model.rdf_model, statement.rdf_statement).zero?
+    end
+
+    # Delete all statements from the model.
+    #
+    # @todo Fix this extremely ineffective (slow) implementation
+    # @return [Boolean]
+    def delete_all
+      each { |st| delete(st) }
     end
 
     # Create a statement and add it to the model.
