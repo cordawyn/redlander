@@ -18,7 +18,7 @@ To start doing anything useful with Redlander, you need to initialize a model fi
 
   $ m = Redlander::Model.new
 
-This creates a model where all RDF statements are stored in the memory. Depending on the selected storage you may need to supply extra parameters like :user or :password. Look-up the options for Storage.initialize_storage method for the list of storage options.
+This creates a model where all RDF statements are stored in the memory. Depending on the selected storage you may need to supply extra parameters like :user or :password. Look-up the options for Model.initialize for the list of available options.
 Naturally, you don't need to create a model if you just want to play around with independent statements, nodes and the like.
 
 == RDF Statements
