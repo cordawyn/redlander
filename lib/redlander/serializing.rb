@@ -5,19 +5,19 @@ module Redlander
     # Serialize model into a string
     #
     # @param [Hash] options
-    # @option options [String] :name name of the serializer to use,
+    # @option options [String] :format name of the serializer to use,
     # @option options [String] :mime_type MIME type of the syntax, if applicable,
     # @option options [String, URI, Uri] :type_uri URI of syntax, if applicable,
     # @option options [String, URI, Uri] :base_uri base URI,
     #   to be applied to the nodes with relative URIs.
     # @raise [RedlandError] if it fails to create a serializer
     def to(options = {})
-      name = options[:name].to_s
+      format = options[:format].to_s
       mime_type = options[:mime_type] && options[:mime_type].to_s
       type_uri = options[:type_uri] && options[:type_uri].to_s
       base_uri = options[:base_uri] && options[:base_uri].to_s
 
-      rdf_serializer = Redland.librdf_new_serializer(Redlander.rdf_world, name, mime_type, type_uri)
+      rdf_serializer = Redland.librdf_new_serializer(Redlander.rdf_world, format, mime_type, type_uri)
       raise RedlandError.new("Failed to create a new serializer") if rdf_serializer.null?
 
       begin
@@ -32,52 +32,52 @@ module Redlander
     end
 
     # Serialize the model in RDF/XML format.
-    # Shortcut for {#to}(:name => "rdfxml").
+    # Shortcut for {#to}(:format => "rdfxml").
     #
     # @param (see #to)
     # @return [String]
     def to_rdfxml(options = {})
-      to(options.merge(:name => "rdfxml"))
+      to(options.merge(:format => "rdfxml"))
     end
 
     # Serialize the model in NTriples format.
-    # Shortcut for {#to}(:name => "ntriples").
+    # Shortcut for {#to}(:format => "ntriples").
     #
     # @param (see #to)
     # @return [String]
     def to_ntriples(options = {})
-      to(options.merge(:name => "ntriples"))
+      to(options.merge(:format => "ntriples"))
     end
 
     # Serialize the model in Turtle format.
-    # Shortcut for {#to}(:name => "turtle").
+    # Shortcut for {#to}(:format => "turtle").
     #
     # @param (see #to)
     # @return [String]
     def to_turtle(options = {})
-      to(options.merge(:name => "turtle"))
+      to(options.merge(:format => "turtle"))
     end
 
     # Serialize the model in JSON format.
-    # Shortcut for {#to}(:name => "json").
+    # Shortcut for {#to}(:format => "json").
     #
     # @param (see #to)
     # @return [String]
     def to_json(options = {})
-      to(options.merge(:name => "json"))
+      to(options.merge(:format => "json"))
     end
 
     # Serialize the model in Dot format.
-    # Shortcut for {#to}(:name => "dot").
+    # Shortcut for {#to}(:format => "dot").
     #
     # @param (see #to)
     # @return [String]
     def to_dot(options = {})
-      to(options.merge(:name => "dot"))
+      to(options.merge(:format => "dot"))
     end
 
     # Serialize the model to a file.
-    # Shortcut for {#to}(:name => "rdfxml").
+    # Shortcut for {#to}(:format => "rdfxml").
     #
     # @param [String] filename path to the output file
     # @param [Hash] options (see {#to} options)

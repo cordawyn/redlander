@@ -28,7 +28,7 @@ module Redlander
     # @raise [RedlandError] if it fails to create a parser or stream
     # @return [Model]
     def from(content, options = {})
-      name = options[:format].to_s
+      format = options[:format].to_s
       mime_type = options[:mime_type] && options[:mime_type].to_s
       type_uri = options[:type_uri] && options[:type_uri].to_s
       base_uri = options[:base_uri] && options[:base_uri].to_s
@@ -36,12 +36,12 @@ module Redlander
 
       # FIXME: to be fixed in librdf:
       # ntriples parser absolutely needs "\n" at the end of the input
-      if name == "ntriples" && !content.is_a?(Uri) && !content.end_with?("\n")
+      if format == "ntriples" && !content.is_a?(Uri) && !content.end_with?("\n")
         content << "\n"
       end
 
-      rdf_parser = Redland.librdf_new_parser(Redlander.rdf_world, name, mime_type, type_uri)
-      raise RedlandError, "Failed to create a new '#{name}' parser" if rdf_parser.null?
+      rdf_parser = Redland.librdf_new_parser(Redlander.rdf_world, format, mime_type, type_uri)
+      raise RedlandError, "Failed to create a new '#{format}' parser" if rdf_parser.null?
 
       begin
         if block_given?
