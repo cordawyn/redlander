@@ -37,43 +37,43 @@ describe Node do
   it "should create a string literal" do
     node = Node.new("hello, world")
     node.should be_literal
-    node.datatype.should eql Uri.new("http://www.w3.org/2001/XMLSchema#string")
+    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#string")
   end
 
   it "should create a boolean literal" do
     node = Node.new(true)
     node.should be_literal
-    node.datatype.should eql Uri.new("http://www.w3.org/2001/XMLSchema#boolean")
+    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#boolean")
   end
 
   it "should create an integer number literal" do
     node = Node.new(10)
     node.should be_literal
-    node.datatype.should eql Uri.new("http://www.w3.org/2001/XMLSchema#int")
+    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#int")
   end
 
   it "should create a floating-point number literal" do
     node = Node.new(3.1416)
     node.should be_literal
-    node.datatype.should eql Uri.new("http://www.w3.org/2001/XMLSchema#float")
+    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#float")
   end
 
   it "should create a time literal" do
     node = Node.new(Time.now)
     node.should be_literal
-    node.datatype.should eql Uri.new("http://www.w3.org/2001/XMLSchema#time")
+    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#time")
   end
 
   it "should create a date literal" do
     node = Node.new(Date.today)
     node.should be_literal
-    node.datatype.should eql Uri.new("http://www.w3.org/2001/XMLSchema#date")
+    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#date")
   end
 
   it "should create a datetime literal" do
     node = Node.new(DateTime.now)
     node.should be_literal
-    node.datatype.should eql Uri.new("http://www.w3.org/2001/XMLSchema#dateTime")
+    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#dateTime")
   end
 
   it "should have proper string representation" do
@@ -90,8 +90,7 @@ describe Node do
   end
 
   it "should have an instance of URI for a resource node" do
-    resource_uri = URI.parse('http://example.com/nodes#node_1')
+    resource_uri = URI('http://example.com/nodes#node_1')
     Node.new(resource_uri).value.should be_an_instance_of(URI::HTTP)
   end
-
 end

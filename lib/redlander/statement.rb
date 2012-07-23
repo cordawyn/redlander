@@ -7,9 +7,9 @@ module Redlander
     # Create an RDF statement.
     #
     # @param [Hash] source
-    # @option source [Node, String, URI, Uri, nil] :subject
-    # @option source [Node, String, URI, Uri, nil] :predicate
-    # @option source [Node, String, URI, Uri, nil] :object
+    # @option source [Node, String, URI, nil] :subject
+    # @option source [Node, String, URI, nil] :predicate
+    # @option source [Node, String, URI, nil] :object
     # @raise [NotImplementedError] if cannot create a Statement from the given source.
     # @raise [RedlandError] if it fails to create a Statement.
     def initialize(source = {})

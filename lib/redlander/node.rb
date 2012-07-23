@@ -23,7 +23,7 @@ module Redlander
                   when FFI::Pointer
                     unless Redland.librdf_node_is_literal(arg).zero?
                       rdf_uri = Redland.librdf_node_get_literal_value_datatype_uri(arg)
-                      @datatype = rdf_uri.null? ? Uri.new(XmlSchema.datatype_of("")) : Uri.new(rdf_uri)
+                      @datatype = rdf_uri.null? ? XmlSchema.datatype_of("") : URI(Redland.librdf_uri_to_string(rdf_uri))
                     end
                     wrap(arg)
                   when NilClass
@@ -32,8 +32,8 @@ module Redlander
                     Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, arg.to_s)
                   else
                     value = arg.respond_to?(:xmlschema) ? arg.xmlschema : arg.to_s
-                    @datatype = Uri.new(XmlSchema.datatype_of(arg))
-                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, @datatype.rdf_uri)
+                    @datatype = XmlSchema.datatype_of(arg)
+                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, Uri.new(@datatype).rdf_uri)
                   end
       raise RedlandError, "Failed to create a new node" if @rdf_node.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_node(@rdf_node) })
@@ -85,10 +85,10 @@ module Redlander
     # Returns the datatype URI for literal nodes,
     # nil for blank nodes.
     #
-    # @return [Uri, nil]
+    # @return [URI, nil]
     def uri
       if resource?
-        Uri.new(Redland.librdf_node_get_uri(@rdf_node))
+        URI(to_s[1..-2])
       elsif literal?
         datatype
       else
@@ -104,7 +104,7 @@ module Redlander
     # @return [URI, Any]
     def value
       if resource?
-        URI.parse(uri.to_s)
+        uri
       else
         XmlSchema.instantiate(to_s)
       end

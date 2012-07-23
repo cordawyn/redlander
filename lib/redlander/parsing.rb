@@ -10,19 +10,19 @@ module Redlander
     #   of the block (if true, the statement will be added,
     #   if false, the statement will not be added).
     #
-    # @param [String, URI, Uri] content
+    # @param [String, URI] content
     #   - Can be a String,
     #     causing the statements to be extracted
     #     directly from it, or
-    #   - URI (or Redlander::Uri)
+    #   - URI
     #     causing the content to be first pulled
     #     from the specified URI (or a local file,
     #     if URI schema == "file:")
     # @param [Hash] options
     # @option options [String] :format name of the parser to use,
     # @option options [String] :mime_type MIME type of the syntax, if applicable,
-    # @option options [String, URI, Uri] :type_uri URI of syntax, if applicable,
-    # @option options [String, URI, Uri] :base_uri base URI,
+    # @option options [String, URI] :type_uri URI of syntax, if applicable,
+    # @option options [String, URI] :base_uri base URI,
     #   to be applied to the nodes with relative URIs.
     # @yieldparam [Statement]
     # @raise [RedlandError] if it fails to create a parser or stream
@@ -107,7 +107,7 @@ module Redlander
 
     # Parse input as stream from URI (or File)
     #
-    # @param [URI, Uri, String] uri URI of the endpoint or file path
+    # @param [URI, String] uri URI of the endpoint or file path
     # @param [Hash] options (see {#from})
     # @yieldparam [Statement]
     # @return [void]

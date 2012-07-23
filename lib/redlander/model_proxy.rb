@@ -56,9 +56,9 @@ module Redlander
     #
     # @param [Hash] source subject, predicate and object nodes
     #   of the statement to be created (see Statement#initialize).
-    # @option source [Node, Uri, URI, String, nil] :subject
-    # @option source [Node, Uri, URI, String, nil] :predicate
-    # @option source [Node, Uri, URI, String, nil] :object
+    # @option source [Node, URI, String, nil] :subject
+    # @option source [Node, URI, String, nil] :predicate
+    # @option source [Node, URI, String, nil] :object
     # @return [Statement, nil]
     def create(source)
       statement = Statement.new(source)

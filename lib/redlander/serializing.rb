@@ -7,8 +7,8 @@ module Redlander
     # @param [Hash] options
     # @option options [String] :format name of the serializer to use,
     # @option options [String] :mime_type MIME type of the syntax, if applicable,
-    # @option options [String, URI, Uri] :type_uri URI of syntax, if applicable,
-    # @option options [String, URI, Uri] :base_uri base URI,
+    # @option options [String, URI] :type_uri URI of syntax, if applicable,
+    # @option options [String, URI] :base_uri base URI,
     #   to be applied to the nodes with relative URIs.
     # @raise [RedlandError] if it fails to create a serializer
     def to(options = {})

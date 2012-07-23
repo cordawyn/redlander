@@ -190,7 +190,7 @@ describe Model do
 
   describe "deserialization" do
     it "should return an instance of Model" do
-      source = Uri.new("file://#{Redlander.fixture_path('doap.rdf')}")
+      source = URI("file://#{Redlander.fixture_path('doap.rdf')}")
       subject.from(source, :format => "rdfxml").should be_a Model
     end
 
@@ -210,9 +210,9 @@ describe Model do
       end
 
       it "should filter statements" do
-        filter_object = Uri.new("http://ar.to/#self")
+        filter_object = URI("http://ar.to/#self")
         expect {
-          subject.from_rdfxml Uri.new("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf" do |st|
+          subject.from_rdfxml URI("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf" do |st|
             st.object.resource? ? st.object.uri != filter_object : true
           end
         }.to change(subject.statements, :size).by(57)
