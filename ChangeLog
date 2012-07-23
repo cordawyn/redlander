@@ -1,0 +1,19 @@
+redlander (0.4.0)
+
+  * deprecated Parser, Serializer, Storage, Stream and related classes and modules
+  * moved parsing and serialization methods to Model instance
+  * renamed parsing/serialization option :name to :format
+  * Redlander::Uri now explicitly belongs to private (internal) API
+  * ModelProxy (model.statements) is now Enumerable, with all benefits thereof
+  * Statement no longer has "valid?" method and "errors" container
+  * blank Nodes can be created with a given ID (:blank_id option)
+  * public methods for handling transactions
+  * URI is preferred over Redlander::Uri as method arguments or output,
+    e.g., Node#datatype, Node#uri and others return an instance of URI
+  * updated gem dependencies
+  * updated README and YARD documentation
+  * added LICENSE (MIT)
+
+redlander (0.3.6)
+
+  ... the dark ages ...
