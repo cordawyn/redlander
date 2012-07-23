@@ -72,7 +72,7 @@ If the input is too large, you may prefer streaming it:
   $ m.from(source, :format => "ntriples")
 
 If you want to get the data from a local file, you can use "file://" schema for your URI
-(or Redlander::Uri) or use "from_file" method with a local file name (without schema):
+or use "from_file" method with a local file name (without schema):
 
   $ m.from_file("../data.ttl", :format => "turtle")
 
