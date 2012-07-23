@@ -18,7 +18,7 @@ module Redlander
       base_uri = options[:base_uri] && options[:base_uri].to_s
 
       rdf_serializer = Redland.librdf_new_serializer(Redlander.rdf_world, format, mime_type, type_uri)
-      raise RedlandError.new("Failed to create a new serializer") if rdf_serializer.null?
+      raise RedlandError, "Failed to create a new serializer" if rdf_serializer.null?
 
       begin
         if options[:file]

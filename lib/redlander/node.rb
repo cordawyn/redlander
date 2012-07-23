@@ -116,7 +116,7 @@ module Redlander
     # @api private
     def wrap(n)
       if n.null?
-        raise RedlandError.new("Failed to create a new node")
+        raise RedlandError, "Failed to create a new node"
       else
         Redland.librdf_new_node_from_node(n)
       end

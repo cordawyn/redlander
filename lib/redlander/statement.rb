@@ -98,7 +98,7 @@ module Redlander
     # @api private
     def wrap(s)
       if s.null?
-        raise RedlandError.new("Failed to create a new statement")
+        raise RedlandError, "Failed to create a new statement"
       else
         Redland.librdf_new_statement_from_statement(s)
       end

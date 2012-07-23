@@ -136,7 +136,7 @@ module Redlander
       when :all
         each(options).to_a
       else
-        raise RedlandError.new("Invalid search scope '#{scope}' specified.")
+        raise RedlandError, "Invalid search scope '#{scope}' specified."
       end
     end
 

@@ -38,7 +38,7 @@ module Redlander
     # @api private
     def wrap(u)
       if u.null?
-        raise RedlandError.new("Failed to create Uri")
+        raise RedlandError, "Failed to create Uri"
       else
         Redland.librdf_new_uri_from_uri(u)
       end

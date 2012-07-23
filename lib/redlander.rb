@@ -16,7 +16,7 @@ module Redlander
     def rdf_world
       unless @rdf_world
         @rdf_world = Redland.librdf_new_world
-        raise RedlandError.new("Could not create a new RDF world") if @rdf_world.null?
+        raise RedlandError, "Could not create a new RDF world" if @rdf_world.null?
         ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_world(@rdf_world) })
         Redland.librdf_world_open(@rdf_world)
       end
