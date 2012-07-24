@@ -72,6 +72,15 @@ module Redlander
       size.zero?
     end
 
+    # Checks the existence of statements in the model
+    # matching the given criteria
+    #
+    # @param [Hash, Statement] source matching pattern (see {#find} options)
+    # @return [Boolean]
+    def exist?(source)
+      !first(source).nil?
+    end
+
     # Size of the model in statements.
     #
     # @note

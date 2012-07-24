@@ -44,7 +44,6 @@ describe Model do
 
     context "when searched" do
       subject { model.statements.find(:first, @conditions) }
-
       before { @statement = model.statements.create(statement_attributes) }
 
       context "with empty conditions" do
@@ -63,6 +62,23 @@ describe Model do
         before { @conditions = {:object => "another object"} }
 
         it { should be_nil }
+      end
+    end
+
+    context "when checked for existance" do
+      subject { model.statements.exist?(@conditions) }
+      before { @statement = model.statements.create(statement_attributes) }
+
+      context "with matching conditions" do
+        before { @conditions = {:object => @statement.object} }
+
+        it { should be_true }
+      end
+
+      context "with non-matching conditions" do
+        before { @conditions = {:object => "another object"} }
+
+        it { should be_false }
       end
     end
 
