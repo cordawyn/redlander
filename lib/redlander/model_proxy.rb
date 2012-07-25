@@ -50,7 +50,9 @@ module Redlander
     # @param [Statement, Hash] pattern (see {#find})
     # @return [Boolean]
     def delete_all(pattern = {})
-      each(pattern) { |st| delete(st) }
+      result = true
+      each(pattern) { |st| result &&= delete(st) }
+      result
     end
 
     # Create a statement and add it to the model.

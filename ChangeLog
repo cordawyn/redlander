@@ -1,3 +1,8 @@
+redlander (0.4.1)
+
+  * model.statements.delete_all accepts a pattern to delete only matching statements
+  * added "model.statements.exist?" checker, with a pattern
+
 redlander (0.4.0)
 
   * deprecated Parser, Serializer, Storage, Stream and related classes and modules
