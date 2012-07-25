@@ -122,6 +122,10 @@ describe Model do
       describe "all statements" do
         before { subject.create(statement_attributes.merge(:object => "another one")) }
 
+        it "should selectively delete statements" do
+          expect { subject.delete_all(:object => "another one") }.to change(subject, :size).by(-1)
+        end
+
         it "should completely wipe the model" do
           expect { subject.delete_all }.to change(subject, :size).from(2).to(0)
         end

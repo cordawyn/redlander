@@ -44,12 +44,13 @@ module Redlander
       Redland.librdf_model_remove_statement(@model.rdf_model, statement.rdf_statement).zero?
     end
 
-    # Delete all statements from the model.
+    # Delete all statements from the model,
+    # matching the given pattern
     #
-    # @todo Fix this extremely ineffective (slow) implementation
+    # @param [Statement, Hash] pattern (see {#find})
     # @return [Boolean]
-    def delete_all
-      each { |st| delete(st) }
+    def delete_all(pattern = {})
+      each(pattern) { |st| delete(st) }
     end
 
     # Create a statement and add it to the model.
@@ -75,10 +76,10 @@ module Redlander
     # Checks the existence of statements in the model
     # matching the given criteria
     #
-    # @param [Hash, Statement] source matching pattern (see {#find} options)
+    # @param [Hash, Statement] pattern (see {#find})
     # @return [Boolean]
-    def exist?(source)
-      !first(source).nil?
+    def exist?(pattern)
+      !first(pattern).nil?
     end
 
     # Size of the model in statements.
@@ -103,7 +104,7 @@ module Redlander
     #
     # @param [Statement, Hash, void] args
     #   if given Statement or Hash, filter the model statements
-    #   according to the specified pattern (see {#find} options).
+    #   according to the specified pattern (see {#find} pattern).
     # @yieldparam [Statement]
     # @return [void]
     def each(*args)
@@ -134,37 +135,37 @@ module Redlander
     # Find statements satisfying the given criteria.
     #
     # @param [:first, :all] scope find just one or all matches
-    # @param [Hash, Statement] options matching pattern made of:
+    # @param [Hash, Statement] pattern matching pattern made of:
     #   - Hash with :subject, :predicate or :object nodes, or
     #   - "patternized" Statement (nil nodes are matching anything).
     # @return [Statement, Array, nil]
-    def find(scope, options = {})
+    def find(scope, pattern = {})
       case scope
       when :first
-        each(options).first
+        each(pattern).first
       when :all
-        each(options).to_a
+        each(pattern).to_a
       else
         raise RedlandError, "Invalid search scope '#{scope}' specified."
       end
     end
 
     # Find a first statement matching the given criteria.
-    # (Shortcut for {#find}(:first, options)).
+    # (Shortcut for {#find}(:first, pattern)).
     #
-    # @param [Hash] options (see {#find})
+    # @param [Statement, Hash] pattern (see {#find})
     # @return [Statement, nil]
-    def first(options = {})
-      find(:first, options)
+    def first(pattern = {})
+      find(:first, pattern)
     end
 
     # Find all statements matching the given criteria.
-    # (Shortcut for {#find}(:all, options)).
+    # (Shortcut for {#find}(:all, pattern)).
     #
-    # @param [Hash] options (see {#find})
+    # @param [Statement, Hash] pattern (see {#find})
     # @return [Array<Statement>]
-    def all(options = {})
-      find(:all, options)
+    def all(pattern = {})
+      find(:all, pattern)
     end
   end
 end
