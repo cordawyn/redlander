@@ -66,6 +66,14 @@ module Redlander
       ModelProxy.new(self)
     end
 
+    # Size of the model, in statements.
+    #
+    # @return [Fixnum]
+    def size
+      s = Redland.librdf_model_size(@rdf_model)
+      s < 0 ? statements.count : s
+    end
+
     # Wrap changes to the given model in a transaction.
     # If an exception is raised in the block, the transaction is rolled back.
     #

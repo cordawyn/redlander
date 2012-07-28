@@ -84,23 +84,6 @@ module Redlander
       !first(pattern).nil?
     end
 
-    # Size of the model in statements.
-    #
-    # @note
-    #   While #count must iterate across all statements in the model,
-    #   {#size} tries to use a more efficient C implementation.
-    #   So {#size} should be preferred to #count in terms of performance.
-    #   However, for non-countable storages, {#size} falls back to
-    #   using #count. Also, {#size} is not available for enumerables
-    #   (e.g. produced from {#each} (without a block) or otherwise) and
-    #   thus cannot be used to count "filtered" results.
-    #
-    # @return [Fixnum]
-    def size
-      s = Redland.librdf_model_size(@model.rdf_model)
-      s < 0 ? count : s
-    end
-
     # Enumerate (and filter) model statements.
     # If given no block, returns Enumerator.
     #

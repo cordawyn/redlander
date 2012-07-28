@@ -4,21 +4,25 @@ describe Model do
   let(:model) { described_class.new }
   subject { model }
 
-  describe "statements" do
-    subject { model.statements }
-
-    it { should be_an_instance_of(ModelProxy) }
+  describe "size" do
+    subject { model.size }
 
     context "for a non-countable storage" do
       before do
-        subject.create(statement_attributes)
+        model.statements.create(statement_attributes)
         Redland.stub(:librdf_model_size => -1)
       end
 
       it "should return size derived from count" do
-        subject.size.should eql subject.count
+        subject.should eql model.statements.count
       end
     end
+  end
+
+  describe "statements" do
+    subject { model.statements }
+
+    it { should be_an_instance_of(ModelProxy) }
 
     context "when enumerated" do
       context "without a block" do
@@ -36,7 +40,7 @@ describe Model do
         it "should be iterated over" do
           expect {
             subject.each { |s| @statements << s }
-          }.to change(@statements, :size).by(1)
+          }.to change(@statements, :count).by(1)
           expect(@statements).to include @statement
         end
       end
@@ -85,13 +89,13 @@ describe Model do
     context "when adding" do
       context "via #create" do
         it "should be created in the model" do
-          expect { subject.create(statement_attributes) }.to change(subject, :size).by(1)
+          expect { subject.create(statement_attributes) }.to change(subject, :count).by(1)
         end
 
         it "should not add duplicate statements" do
           expect {
             2.times { subject.create(statement_attributes) }
-          }.to change(subject, :size).by(1)
+          }.to change(subject, :count).by(1)
         end
       end
 
@@ -99,14 +103,14 @@ describe Model do
         before { @statement = Statement.new(statement_attributes) }
 
         it "should be added to the model" do
-          expect { subject.add(@statement) }.to change(subject, :size).by(1)
+          expect { subject.add(@statement) }.to change(subject, :count).by(1)
           subject.should include(@statement)
         end
 
         it "should not add duplicate statements" do
           expect {
             2.times { subject.add(@statement) }
-          }.to change(subject, :size).by(1)
+          }.to change(subject, :count).by(1)
         end
       end
     end
@@ -115,7 +119,7 @@ describe Model do
       before { @statement = subject.create(statement_attributes) }
 
       it "should be removed from the model" do
-        expect { subject.delete(@statement) }.to change(subject, :size).by(-1)
+        expect { subject.delete(@statement) }.to change(subject, :count).by(-1)
         subject.should_not include(@statement)
       end
 
@@ -123,27 +127,13 @@ describe Model do
         before { subject.create(statement_attributes.merge(:object => "another one")) }
 
         it "should selectively delete statements" do
-          expect { subject.delete_all(:object => "another one") }.to change(subject, :size).by(-1)
+          expect { subject.delete_all(:object => "another one") }.to change(subject, :count).by(-1)
         end
 
         it "should completely wipe the model" do
-          expect { subject.delete_all }.to change(subject, :size).from(2).to(0)
+          expect { subject.delete_all }.to change(subject, :count).from(2).to(0)
         end
       end
-    end
-
-
-    private
-
-    def statement_attributes
-      s = URI.parse('http://example.com/concepts#subject')
-      p = URI.parse('http://example.com/concepts#label')
-      o = "subject!"
-      {
-        :subject => s,
-        :predicate => p,
-        :object => o
-      }
     end
   end
 
@@ -220,13 +210,13 @@ describe Model do
       it "should parse from string" do
         expect {
           subject.from_rdfxml File.read(@filename), :base_uri => "http://rubygems.org/gems/rdf"
-        }.to change(subject.statements, :size).by(62)
+        }.to change(subject.statements, :count).by(62)
       end
 
       it "should parse from URI/file" do
         expect {
           subject.from_rdfxml URI("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf"
-        }.to change(subject.statements, :size).by(62)
+        }.to change(subject.statements, :count).by(62)
       end
 
       it "should filter statements" do
@@ -235,7 +225,7 @@ describe Model do
           subject.from_rdfxml URI("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf" do |st|
             st.object.resource? ? st.object.uri != filter_object : true
           end
-        }.to change(subject.statements, :size).by(57)
+        }.to change(subject.statements, :count).by(57)
       end
     end
 
@@ -245,13 +235,13 @@ describe Model do
       it "should parse from string" do
         expect {
           subject.from_ntriples File.read(@filename)
-        }.to change(subject.statements, :size).by(62)
+        }.to change(subject.statements, :count).by(62)
       end
 
       it "should parse from URI/file" do
         expect {
           subject.from_ntriples URI("file://" + @filename)
-        }.to change(subject.statements, :size).by(62)
+        }.to change(subject.statements, :count).by(62)
       end
     end
 
@@ -261,13 +251,13 @@ describe Model do
       it "should parse from string" do
         expect {
           subject.from_turtle File.read(@filename), :base_uri => "http://rubygems.org/gems/rdf"
-        }.to change(subject.statements, :size).by(62)
+        }.to change(subject.statements, :count).by(62)
       end
 
       it "should parse from URI/file" do
         expect {
           subject.from_turtle URI("file://" + @filename), :base_uri => "http://rubygems.org/gems/rdf"
-        }.to change(subject.statements, :size).by(62)
+        }.to change(subject.statements, :count).by(62)
       end
     end
   end
@@ -320,5 +310,19 @@ describe Model do
         expect { subject.transaction_rollback! }.to raise_exception RedlandError
       end
     end
+  end
+
+
+  private
+
+  def statement_attributes
+    s = URI.parse('http://example.com/concepts#subject')
+    p = URI.parse('http://example.com/concepts#label')
+    o = "subject!"
+    {
+      :subject => s,
+      :predicate => p,
+      :object => o
+    }
   end
 end
