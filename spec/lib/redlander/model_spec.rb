@@ -72,6 +72,37 @@ describe Model do
     end
   end
 
+  describe "merge" do
+    before do
+      @model2 = Redlander::Model.new
+      @model3 = Redlander::Model.new
+      @statement1 = Redlander::Statement.new(:subject => URI("http://rubygems.org/gems/rdf"),
+                                             :predicate => URI("http://usefulinc.com/ns/doap#framework"),
+                                             :object => "RDF")
+      model.statements.add(@statement1)
+      @statement2 = Redlander::Statement.new(:subject => URI("http://rubygems.org/gems/rdfs"),
+                                             :predicate => URI("http://usefulinc.com/ns/doap#framework"),
+                                             :object => "RDFS")
+      @model2.statements.add(@statement2)
+      @model3.statements.add(@statement1)
+    end
+
+    it "should return model" do
+      expect(model.merge(@model2)).to eql model
+    end
+
+    it "should add different model statements" do
+      expect { model.merge(@model2) }.to change(model, :size).by(1)
+      expect(model.statements).to include(@statement1)
+      expect(model.statements).to include(@statement2)
+    end
+
+    it "should add same model statements" do
+      expect { model.merge(@model3) }.not_to change(model, :size)
+      expect(model.statements).to include(@statement1)
+    end
+  end
+
   describe "statements" do
     subject { model.statements }
 

@@ -104,6 +104,21 @@ module Redlander
       query.process(self)
     end
 
+    # Merge statements from another model
+    # (duplicates and invalid statements are skipped)
+    #
+    # @param [Redlander::Model] model
+    # @return [self]
+    def merge(model)
+      rdf_stream = Redland.librdf_model_as_stream(model.rdf_model)
+      raise RedlandError, "Failed to convert model to a stream" if rdf_stream.null?
+
+      Redland.librdf_model_add_statements(@rdf_model, rdf_stream)
+      self
+    ensure
+      Redland.librdf_free_stream(rdf_stream)
+    end
+
     # Wrap changes to the given model in a transaction.
     # If an exception is raised in the block, the transaction is rolled back.
     #
