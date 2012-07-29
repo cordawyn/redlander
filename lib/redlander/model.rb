@@ -1,6 +1,7 @@
 require 'redlander/parsing'
 require 'redlander/serializing'
 require 'redlander/model_proxy'
+require "redlander/query/results"
 
 module Redlander
   # The core object incorporating the repository of RDF statements.
@@ -72,6 +73,26 @@ module Redlander
     def size
       s = Redland.librdf_model_size(@rdf_model)
       s < 0 ? statements.count : s
+    end
+
+    # Query the model RDF graph using a query language
+    #
+    # @param [String] q the text of the query
+    # @param [Hash<Symbol => [String, URI]>] options options for the query
+    # @option options [String] :language language of the query, one of:
+    #   - "sparql10" SPARQL 1.0 W3C RDF Query Language (default)
+    #   - "sparql" SPARQL 1.1 (DRAFT) Query and Update Languages
+    #   - "sparql11-query" SPARQL 1.1 (DRAFT) Query Language
+    #   - "sparql11-update" SPARQL 1.1 (DRAFT) Update Language
+    #   - "laqrs" LAQRS adds to Querying RDF in SPARQL
+    #   - "rdql" RDF Data Query Language (RDQL)
+    # @option options [String] :language_uri URI of the query language, if applicable
+    # @option options [String] :base_uri base URI of the query, if applicable
+    # @return [void] determined by the type of the query, or nil if query fails
+    # @raise [RedlandError] if fails to create a query
+    def query(q, options = {})
+      query = Query::Results.new(q, options)
+      query.process(self)
     end
 
     # Wrap changes to the given model in a transaction.

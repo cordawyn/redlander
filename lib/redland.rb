@@ -31,6 +31,7 @@ module Redland
   attach_function :librdf_model_transaction_start, [:pointer], :int
   attach_function :librdf_model_transaction_commit, [:pointer], :int
   attach_function :librdf_model_transaction_rollback, [:pointer], :int
+  attach_function :librdf_model_query_execute, [:pointer, :pointer], :pointer
 
   # Statement
   attach_function :librdf_free_statement, [:pointer], :void
@@ -85,4 +86,25 @@ module Redland
   attach_function :librdf_free_uri, [:pointer], :void
   attach_function :librdf_uri_to_string, [:pointer], :string
   attach_function :librdf_uri_equals, [:pointer, :pointer], :int
+
+  # Query
+  attach_function :librdf_new_query, [:pointer, :string, :pointer, :string, :pointer], :pointer
+  attach_function :librdf_free_query, [:pointer], :void
+  attach_function :librdf_query_get_limit, [:pointer], :int
+  attach_function :librdf_query_set_limit, [:pointer, :int], :int
+  attach_function :librdf_query_get_offset, [:pointer], :int
+  attach_function :librdf_query_set_limit, [:pointer, :int], :int
+  attach_function :librdf_query_results_is_bindings, [:pointer], :int
+  attach_function :librdf_query_results_is_boolean, [:pointer], :int
+  attach_function :librdf_query_results_is_graph, [:pointer], :int
+  attach_function :librdf_query_results_is_syntax, [:pointer], :int
+  attach_function :librdf_query_results_get_binding_name, [:pointer, :int], :string
+  attach_function :librdf_query_results_get_binding_value, [:pointer, :int], :pointer
+  attach_function :librdf_query_results_get_binding_value_by_name, [:pointer, :string], :pointer
+  attach_function :librdf_query_results_get_bindings_count, [:pointer], :int
+  attach_function :librdf_query_results_get_boolean, [:pointer], :int
+  attach_function :librdf_query_results_as_stream, [:pointer], :pointer
+  attach_function :librdf_query_results_next, [:pointer], :int
+  attach_function :librdf_query_results_finished, [:pointer], :int
+  attach_function :librdf_free_query_results, [:pointer], :void
 end
