@@ -1,7 +1,10 @@
-redlander (0.4.1)
+redlander (0.5.0)
 
+  * Model#query for queries in SPARQL (and other supported languages)
+  * model.statements.size is obsolete, use model.size or model.statements.count
   * model.statements.delete_all accepts a pattern to delete only matching statements
   * added "model.statements.exist?" checker, with a pattern
+  * bugfixes
 
 redlander (0.4.0)
 
