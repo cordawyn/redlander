@@ -59,6 +59,20 @@ You can access the subject, predicate or object of a statement:
 
 Please refer to Redlander::Node API doc for details.
 
+You can also use different query languages supported by librdf ("SPARQL 1.0" being a default):
+
+  $ m.query("SELECT ?s ?p ?o WHERE {}")  # => [{"s" => ..., "p" => ..., "o" => ...}, ...]
+
+"ASK" queries return true/false, "SELECT" queries return arrays of binding hashes,
+"CONSTRUCT" queries return an instance of a new memory-based model comprised from
+the statements constructed by the query.
+You can also supply a block to Model#query, which is ignored by ASK queries, but
+yields the statements constructed by CONSTRUCT queries and yields the binding
+hash for SELECT queries. Binding hash values are instances of Redlander::Node.
+
+For query options and available query languages refer to Model#query documentation.
+
+
 == Parsing Input
 
 You can fill your model with statements by parsing some external sources like plain or streamed data.

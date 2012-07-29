@@ -88,7 +88,16 @@ module Redlander
     #   - "rdql" RDF Data Query Language (RDQL)
     # @option options [String] :language_uri URI of the query language, if applicable
     # @option options [String] :base_uri base URI of the query, if applicable
-    # @return [void] determined by the type of the query, or nil if query fails
+    # @return [void]
+    # @note
+    #   The returned value is determined by the type of the query:
+    #   - [Boolean] for SPARQL ASK queries (ignores block, if given)
+    #   - [Redlander::Model] for SPARQL CONSTRUCT queries
+    #     if given a block, yields the constructed statements to it instead
+    #   - [Array<Hash>] for SPARQL SELECT queries
+    #     where hash values are Redlander::Node instances;
+    #     if given a block, yields each binding hash to it
+    #   - nil, if query fails
     # @raise [RedlandError] if fails to create a query
     def query(q, options = {})
       query = Query::Results.new(q, options)
