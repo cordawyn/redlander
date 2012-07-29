@@ -98,7 +98,7 @@ module Redlander
           if args.empty?
             Redland.librdf_model_as_stream(@model.rdf_model)
           else
-            pattern = args.first.is_a?(Statement) ? args.first.rdf_statement : Statement.new(args.first)
+            pattern = args.first.is_a?(Statement) ? args.first : Statement.new(args.first)
             Redland.librdf_model_find_statements(@model.rdf_model, pattern.rdf_statement)
           end
         raise RedlandError, "Failed to create a new stream" if rdf_stream.null?
