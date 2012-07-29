@@ -67,7 +67,9 @@ describe Model do
       end
 
       describe "DESCRIBE" do
-        it { pending "Not implemented in librdf?" }
+        let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> DESCRIBE ?gem WHERE { ?gem a doap:Project }" }
+
+        it { pending "Not implemented. See: http://bugs.librdf.org/mantis/view.php?id=135" }
       end
     end
   end
