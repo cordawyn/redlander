@@ -113,10 +113,12 @@ module Redlander
       rdf_stream = Redland.librdf_model_as_stream(model.rdf_model)
       raise RedlandError, "Failed to convert model to a stream" if rdf_stream.null?
 
-      Redland.librdf_model_add_statements(@rdf_model, rdf_stream)
-      self
-    ensure
-      Redland.librdf_free_stream(rdf_stream)
+      begin
+        Redland.librdf_model_add_statements(@rdf_model, rdf_stream)
+        self
+      ensure
+        Redland.librdf_free_stream(rdf_stream)
+      end
     end
 
     # Wrap changes to the given model in a transaction.
