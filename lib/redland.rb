@@ -27,6 +27,7 @@ module Redland
   attach_function :librdf_model_size, [:pointer], :int
   attach_function :librdf_model_find_statements, [:pointer, :pointer], :pointer
   attach_function :librdf_model_add_statement, [:pointer, :pointer], :int
+  attach_function :librdf_model_add_statements, [:pointer, :pointer], :int
   attach_function :librdf_model_remove_statement, [:pointer, :pointer], :int
   attach_function :librdf_model_transaction_start, [:pointer], :int
   attach_function :librdf_model_transaction_commit, [:pointer], :int

@@ -19,6 +19,59 @@ describe Model do
     end
   end
 
+  describe "query" do
+    before { model.from_file(Redlander.fixture_path("doap.ttl"), :format => "turtle") }
+    subject { model.query(q) }
+
+    describe "SPARQL" do
+      describe "SELECT" do
+        let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> SELECT ?name WHERE { <http://rubygems.org/gems/rdf> doap:name ?name }" }
+
+        it { should be_a Enumerable }
+
+        it "should return an array of binding hashes" do
+          expect(subject.size).to eql 1
+          expect(subject.first["name"]).to be_a Redlander::Node
+          expect(subject.first["name"].value).to eql "RDF.rb"
+        end
+
+        context "with a block" do
+          it "should yield a binding hash" do
+            subject do |binding|
+              expect(binding).to be_a Hash
+              expect(binding["name"]).to be_a Redlander::Node
+              expect(binding["name"].value).to eql "RDF.rb"
+            end
+          end
+        end
+      end
+
+      describe "ASK" do
+        let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> ASK { <http://rubygems.org/gems/rdf> doap:homepage <http://rdf.rubyforge.org/> }" }
+
+        it { should be_true }
+      end
+
+      describe "CONSTRUCT" do
+        let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> CONSTRUCT { ?project doap:framework 'RDF'^^<http://www.w3.org/2001/XMLSchema#string> } WHERE { ?project a doap:Project }" }
+
+        it { should be_a Redlander::Model }
+
+        it "should return a model made from the constructed statements" do
+          statement = Redlander::Statement.new(:subject => URI("http://rubygems.org/gems/rdf"),
+                                               :predicate => URI("http://usefulinc.com/ns/doap#framework"),
+                                               :object => "RDF")
+          expect(subject.statements.count).to eql 1
+          expect(subject.statements.exist?(statement)).to be_true
+        end
+      end
+
+      describe "DESCRIBE" do
+        it { pending "Not implemented in librdf?" }
+      end
+    end
+  end
+
   describe "statements" do
     subject { model.statements }
 

@@ -30,14 +30,10 @@ module Redlander
               map { process_bindings }
             end
           when boolean?
-            if block_given?
-              yield process_boolean
-            else
-              process_boolean
-            end
+            process_boolean
           when graph?
             if block_given?
-              yield process_graph
+              process_graph { |statement| yield statement }
             else
               process_graph
             end
@@ -98,7 +94,22 @@ module Redlander
       end
 
       def process_graph
-        raise NotImplementedError
+        rdf_stream = Redland.librdf_query_results_as_stream(@rdf_results)
+        if block_given?
+          while Redland.librdf_stream_end(rdf_stream).zero?
+            statement = Statement.new(Redland.librdf_stream_get_object(rdf_stream))
+            yield statement
+            Redland.librdf_stream_next(rdf_stream)
+          end
+        else
+          Model.new.tap do |model|
+            unless Redland.librdf_model_add_statements(model.rdf_model, rdf_stream).zero?
+              raise RedlandError, "Could not create model from the stream"
+            end
+          end
+        end
+      ensure
+        Redland.librdf_free_stream(rdf_stream)
       end
 
       def process_syntax
