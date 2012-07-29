@@ -103,9 +103,7 @@ module Redlander
           end
         else
           Model.new.tap do |model|
-            unless Redland.librdf_model_add_statements(model.rdf_model, rdf_stream).zero?
-              raise RedlandError, "Could not create model from the stream"
-            end
+            Redland.librdf_model_add_statements(model.rdf_model, rdf_stream)
           end
         end
       ensure
