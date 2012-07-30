@@ -82,7 +82,10 @@ module Redlander
           while n > 0
             name = Redland.librdf_query_results_get_binding_name(@rdf_results, n-1)
             value = Redland.librdf_query_results_get_binding_value(@rdf_results, n-1)
-            bindings[name] = Node.new(value) unless value.null?
+            unless value.null?
+              bindings[name] = Node.new(value)
+              Redland.librdf_free_node(value)
+            end
             n -= 1
           end
         end
