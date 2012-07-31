@@ -19,33 +19,34 @@ module Redlander
       def process(model)
         @rdf_results = Redland.librdf_model_query_execute(model.rdf_model, @rdf_query)
 
-        if @rdf_results.null?
-          return nil
-        else
-          begin
-            case
-            when bindings?
-              if block_given?
-                each { yield process_bindings }
-              else
-                map { process_bindings }
-              end
-            when boolean?
-              process_boolean
-            when graph?
-              if block_given?
-                process_graph { |statement| yield statement }
-              else
-                process_graph
-              end
-            when syntax?
-              process_syntax
+        begin
+          case
+          when bindings?
+            if block_given?
+              return nil if @rdf_results.null?
+              each { yield process_bindings }
             else
-              raise RedlandError, "Cannot determine the type of query results"
+              return [] if @rdf_results.null?
+              map { process_bindings }
             end
-          ensure
-            Redland.librdf_free_query_results(@rdf_results)
+          when boolean?
+            return nil if @rdf_results.null?
+            process_boolean
+          when graph?
+            if block_given?
+              return nil if @rdf_results.null?
+              process_graph { |statement| yield statement }
+            else
+              return [] if @rdf_results.null?
+              process_graph
+            end
+          when syntax?
+            process_syntax
+          else
+            raise RedlandError, "Cannot determine the type of query results"
           end
+        ensure
+          Redland.librdf_free_query_results(@rdf_results)
         end
       end
 
