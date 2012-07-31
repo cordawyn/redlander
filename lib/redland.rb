@@ -107,5 +107,6 @@ module Redland
   attach_function :librdf_query_results_as_stream, [:pointer], :pointer
   attach_function :librdf_query_results_next, [:pointer], :int
   attach_function :librdf_query_results_finished, [:pointer], :int
+  attach_function :librdf_query_results_get_count, [:pointer], :int
   attach_function :librdf_free_query_results, [:pointer], :void
 end
