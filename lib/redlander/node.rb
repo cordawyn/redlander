@@ -106,7 +106,7 @@ module Redlander
       if resource?
         uri
       elsif blank?
-        Redland.librdf_node_get_blank_identifier(@rdf_node)
+        Redland.librdf_node_get_blank_identifier(@rdf_node).force_encoding("UTF-8")
       else
         v = Redland.librdf_node_get_literal_value(@rdf_node).force_encoding("UTF-8")
         XmlSchema.instantiate(v, @datatype)
