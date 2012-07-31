@@ -33,11 +33,10 @@ module Redlander
             return nil if @rdf_results.null?
             process_boolean
           when graph?
+            return nil if @rdf_results.null?
             if block_given?
-              return nil if @rdf_results.null?
               process_graph { |statement| yield statement }
             else
-              return [] if @rdf_results.null?
               process_graph
             end
           when syntax?
