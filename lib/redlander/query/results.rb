@@ -54,12 +54,13 @@ module Redlander
           # FIXME: librdf is messed up here, it seems:
           #  librdf_query_results_finished crashes occasionally,
           #  librdf_query_results_get_count returns 0 for non-empty result list
-          # while Redland.librdf_query_results_finished(@rdf_results).zero?
-          n = Redland.librdf_query_results_get_count(@rdf_results) + 1
-          while n > 0
-            yield self
-            Redland.librdf_query_results_next(@rdf_results)
-            n -= 1
+          if Redland.librdf_query_results_finished(@rdf_results).zero?
+            n = Redland.librdf_query_results_get_count(@rdf_results)
+            while n > 0
+              yield self
+              Redland.librdf_query_results_next(@rdf_results)
+              n -= 1
+            end
           end
         else
           enum_for(:each)
