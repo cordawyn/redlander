@@ -109,12 +109,7 @@ module Redlander
         Redland.librdf_node_get_blank_identifier(@rdf_node)
       else
         v = Redland.librdf_node_get_literal_value(@rdf_node).force_encoding("UTF-8")
-        rdf_uri = Redland.librdf_node_get_literal_value_datatype_uri(@rdf_node)
-        if rdf_uri.null?
-          XmlSchema.instantiate(v)
-        else
-          XmlSchema.instantiate(v, Redland.librdf_uri_to_string(rdf_uri))
-        end
+        XmlSchema.instantiate(v, @datatype)
       end
     end
 
