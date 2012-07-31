@@ -49,7 +49,7 @@ describe Node do
   it "should create an integer number literal" do
     node = Node.new(10)
     node.should be_literal
-    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#int")
+    node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#integer")
   end
 
   it "should create a floating-point number literal" do
