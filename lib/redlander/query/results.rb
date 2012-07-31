@@ -22,29 +22,31 @@ module Redlander
         if @rdf_results.null?
           return nil
         else
-          case
-          when bindings?
-            if block_given?
-              each { yield process_bindings }
+          begin
+            case
+            when bindings?
+              if block_given?
+                each { yield process_bindings }
+              else
+                map { process_bindings }
+              end
+            when boolean?
+              process_boolean
+            when graph?
+              if block_given?
+                process_graph { |statement| yield statement }
+              else
+                process_graph
+              end
+            when syntax?
+              process_syntax
             else
-              map { process_bindings }
+              raise RedlandError, "Cannot determine the type of query results"
             end
-          when boolean?
-            process_boolean
-          when graph?
-            if block_given?
-              process_graph { |statement| yield statement }
-            else
-              process_graph
-            end
-          when syntax?
-            process_syntax
-          else
-            raise RedlandError, "Cannot determine the type of query results"
+          ensure
+            Redland.librdf_free_query_results(@rdf_results)
           end
         end
-      ensure
-        Redland.librdf_free_query_results(@rdf_results)
       end
 
       def each
