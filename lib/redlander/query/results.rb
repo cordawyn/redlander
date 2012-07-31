@@ -49,9 +49,15 @@ module Redlander
 
       def each
         if block_given?
-          while Redland.librdf_query_results_finished(@rdf_results).zero?
+          # FIXME: librdf is messed up here, is seems:
+          #  librdf_query_results_finished crashes occasionally,
+          #  librdf_query_results_get_count returns 0 for non-empty result list
+          # while Redland.librdf_query_results_finished(@rdf_results).zero?
+          n = Redland.librdf_query_results_get_count(@rdf_results)
+          while n > -1
             yield self
             Redland.librdf_query_results_next(@rdf_results)
+            n -= 1
           end
         else
           enum_for(:each)
