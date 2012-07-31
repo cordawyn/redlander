@@ -51,9 +51,9 @@ module Redlander
 
       def each
         if block_given?
-          # FIXME: librdf is messed up here, it seems:
-          #  librdf_query_results_finished crashes occasionally,
-          #  librdf_query_results_get_count returns 0 for non-empty result list
+          # FIXME: librdf is messed up here,
+          #  apparently, the output of librdf_query_results_get_count makes no sense
+          #  unless librdf_query_results_finished returns 0.
           if Redland.librdf_query_results_finished(@rdf_results).zero?
             n = Redland.librdf_query_results_get_count(@rdf_results)
             while n > 0
