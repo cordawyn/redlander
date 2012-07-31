@@ -99,9 +99,9 @@ module Redlander
     #     if given a block, yields each binding hash to it
     #   - nil, if query fails
     # @raise [RedlandError] if fails to create a query
-    def query(q, options = {})
+    def query(q, options = {}, &block)
       query = Query::Results.new(q, options)
-      query.process(self)
+      query.process(self, &block)
     end
 
     # Merge statements from another model

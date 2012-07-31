@@ -38,10 +38,10 @@ describe Model do
 
         context "with a block" do
           it "should yield a binding hash" do
-            subject do |binding|
+            model.query(q) do |binding|
               expect(binding).to be_a Hash
-              expect(binding["name"]).to be_a Redlander::Node
-              expect(binding["name"].value).to eql "RDF.rb"
+              expect(binding["subject"]).to be_a Redlander::Node
+              expect(binding["subject"].value).to eql project
             end
           end
         end
@@ -126,7 +126,7 @@ describe Model do
 
         it "should be iterated over" do
           expect {
-            subject.each { |s| @statements << s }
+            model.statements.each { |s| @statements << s }
           }.to change(@statements, :count).by(1)
           expect(@statements).to include @statement
         end
