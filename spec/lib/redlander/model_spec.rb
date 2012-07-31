@@ -25,14 +25,15 @@ describe Model do
 
     describe "SPARQL" do
       describe "SELECT" do
-        let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> SELECT ?name WHERE { <http://rubygems.org/gems/rdf> doap:name ?name }" }
+        let(:project) { URI("http://rubygems.org/gems/rdf") }
+        let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> SELECT ?subject WHERE { ?subject doap:name 'RDF.rb' . ?subject doap:platform 'Ruby' }" }
 
         it { should be_a Enumerable }
 
         it "should return an array of binding hashes" do
           expect(subject.size).to eql 1
-          expect(subject.first["name"]).to be_a Redlander::Node
-          expect(subject.first["name"].value).to eql "RDF.rb"
+          expect(subject.first["subject"]).to be_a Redlander::Node
+          expect(subject.first["subject"].value).to eql project
         end
 
         context "with a block" do
