@@ -51,16 +51,9 @@ module Redlander
 
       def each
         if block_given?
-          # FIXME: librdf is messed up here,
-          #  apparently, the output of librdf_query_results_get_count makes no sense
-          #  unless librdf_query_results_finished returns 0.
-          if Redland.librdf_query_results_finished(@rdf_results).zero?
-            n = Redland.librdf_query_results_get_count(@rdf_results)
-            while n > 0
-              yield self
-              Redland.librdf_query_results_next(@rdf_results)
-              n -= 1
-            end
+          while Redland.librdf_query_results_finished(@rdf_results).zero?
+            yield self
+            Redland.librdf_query_results_next(@rdf_results)
           end
         else
           enum_for(:each)

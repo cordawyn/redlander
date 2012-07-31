@@ -20,29 +20,39 @@ describe Model do
   end
 
   describe "query" do
-    before { model.from_file(Redlander.fixture_path("doap.ttl"), :format => "turtle") }
+    let(:project) { URI("http://rubygems.org/gems/rdf") }
     subject { model.query(q) }
+    before { model.from_file(Redlander.fixture_path("doap.ttl"), :format => "turtle") }
 
     describe "SPARQL" do
       describe "SELECT" do
-        let(:project) { URI("http://rubygems.org/gems/rdf") }
-        let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> SELECT ?subject WHERE { ?subject doap:name 'RDF.rb' . ?subject doap:platform 'Ruby' }" }
+        context "for a single result" do
+          let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> SELECT ?subject WHERE { ?subject doap:name 'RDF.rb' . ?subject doap:platform 'Ruby' }" }
 
-        it { should be_a Enumerable }
+          it { should be_a Enumerable }
 
-        it "should return an array of binding hashes" do
-          expect(subject.size).to eql 1
-          expect(subject.first["subject"]).to be_a Redlander::Node
-          expect(subject.first["subject"].value).to eql project
+          it "should return an array of binding hashes" do
+            expect(subject.size).to eql 1
+            expect(subject.first["subject"]).to be_a Redlander::Node
+            expect(subject.first["subject"].value).to eql project
+          end
+
+          context "with a block" do
+            it "should yield a binding hash" do
+              model.query(q) do |binding|
+                expect(binding).to be_a Hash
+                expect(binding["subject"]).to be_a Redlander::Node
+                expect(binding["subject"].value).to eql project
+              end
+            end
+          end
         end
 
-        context "with a block" do
-          it "should yield a binding hash" do
-            model.query(q) do |binding|
-              expect(binding).to be_a Hash
-              expect(binding["subject"]).to be_a Redlander::Node
-              expect(binding["subject"].value).to eql project
-            end
+        context "for multiple results" do
+          let(:q) { "PREFIX doap: <http://usefulinc.com/ns/doap#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?name WHERE { <http://rubygems.org/gems/rdf> doap:helper [ foaf:name ?name ] }" }
+
+          it "should yield multiple bindings" do
+            expect(subject.size).to eql 9
           end
         end
       end
