@@ -10,14 +10,15 @@ describe Node do
     it { should be_blank }
 
     it "should have a blank identifier for a blank node" do
-      subject.value.should match(/^_:\w+$/)
+      subject.value.should match(/^r\d+/)
+      subject.to_s.should match(/^_:\w+$/)
     end
 
     context "when given :blank_id" do
       before { @options = {:blank_id => "blank0"} }
 
       it "should create a node with the given identifier" do
-        expect(subject.value).to eql "_:blank0"
+        expect(subject.value).to eql "blank0"
       end
     end
   end

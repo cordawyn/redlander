@@ -60,6 +60,7 @@ module Redland
   attach_function :librdf_node_equals, [:pointer, :pointer], :int
   attach_function :librdf_node_to_string, [:pointer], :string
   attach_function :librdf_node_get_uri, [:pointer], :pointer
+  attach_function :librdf_node_get_blank_identifier, [:pointer], :string
 
   # Stream
   attach_function :librdf_free_stream, [:pointer], :void

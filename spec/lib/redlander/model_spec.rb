@@ -54,7 +54,7 @@ describe Model do
 
           it "should yield multiple bindings" do
             # TODO: librdf screws up the input UTF-8 encoding
-            helpers = ["C\\u0103lin Ardelean", "Danny Gagne", "Joey Geiger", "Fumihiro Kato", "Naoki Kawamukai", "Hellekin O. Wolf", "John Fieber", "Keita Urashima", "Pius Uzamere"]
+            helpers = ["Călin Ardelean", "Danny Gagne", "Joey Geiger", "Fumihiro Kato", "Naoki Kawamukai", "Hellekin O. Wolf", "John Fieber", "Keita Urashima", "Pius Uzamere"]
 
             expect(subject.size).to eql helpers.size
             subject.each do |binding|
