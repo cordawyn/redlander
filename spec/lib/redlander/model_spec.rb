@@ -373,6 +373,10 @@ describe Model do
                    :librdf_model_transaction_rollback => 0)
     end
 
+    it "should return the output of the block evaluation" do
+      subject.transaction { 3+7 }.should eql(10)
+    end
+
     context "when start fails" do
       before { Redland.stub(:librdf_model_transaction_start => -1) }
 

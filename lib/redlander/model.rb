@@ -131,8 +131,9 @@ module Redlander
     def transaction
       if block_given?
         transaction_start
-        yield
+        result = yield
         transaction_commit
+        result
       end
     rescue
       transaction_rollback
