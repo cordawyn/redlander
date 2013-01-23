@@ -1,6 +1,6 @@
 = Redlander
 
-Redlander is Ruby bindings to Redland library (see http://librdf.org) written in C, which is used to manipulate RDF graphs. This is an alternative implementation of Ruby bindings (as opposed to the official bindings), aiming to be more intuitive, lightweight, high-performing and as bug-free as possible.
+Redlander is Ruby bindings to [Redland](http://librdf.org) library written in C, which is used to manipulate RDF graphs. This is an alternative implementation of Ruby bindings (as opposed to the official bindings), aiming to be more intuitive, lightweight, high-performing and as bug-free as possible.
 
 = Installing
 
@@ -162,7 +162,7 @@ Update your `redland` library to 1.0.15 or newer to fix this.
 
 = Authors and Contributors
 
-Slava Kravchenko <https://github.com/cordawyn>
+[Slava Kravchenko](https://github.com/cordawyn)
 
 = Thanks
 
