@@ -142,6 +142,24 @@ in case of an error.
 
 If anything unexpected happens, Redlander raises RedlandError.
 
+= Known Issues
+
+> Fixed in `redland-1.0.15`: [0000478](http://bugs.librdf.org/mantis/view.php?id=478)
+
+All Enumerator-based aggregation methods of `Redlander::ModelProxy`
+return invalid results - they are all copies of the last found statement.
+For example,
+
+    model.statements.to_a
+
+returns statement copies, while
+
+    model.statements.each { ... }
+
+yields proper results in the block.
+Update your `redland` library to 1.0.15 or newer to fix this.
+
+
 = Authors and Contributors
 
 Slava Kravchenko <https://github.com/cordawyn>
