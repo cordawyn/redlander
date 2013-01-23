@@ -18,3 +18,4 @@ tmp/
 .bundle
 .yardoc/
 doc/
+bin/
