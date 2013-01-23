@@ -171,6 +171,39 @@ describe Model do
 
         it { should be_nil }
       end
+
+      context "for all matching statements" do
+        subject { model.statements.find(:all, @conditions) }
+
+        before do
+          @another_statement =
+            model.statements.create(statement_attributes.merge(:subject => URI.parse('http://example.com/concepts#another_subject')))
+        end
+
+        context "with empty conditions" do
+          before { @conditions = {} }
+
+          it { should eql [@statement, @another_statement] }
+        end
+
+        context "with one matching statement" do
+          before { @conditions = {:subject => @statement.subject} }
+
+          it { should eql [@statement] }
+        end
+
+        context "with all matching statements" do
+          before { @conditions = {:object => @statement.object} }
+
+          it { should eql [@statement, @another_statement] }
+        end
+
+        context "with no matching statements" do
+          before { @conditions = {:object => "no match"} }
+
+          it { should be_empty }
+        end
+      end
     end
 
     context "when checked for existance" do
