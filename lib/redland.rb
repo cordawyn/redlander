@@ -5,8 +5,9 @@ module Redland
   if !defined?(RUBY_ENGINE) || RUBY_ENGINE == 'ruby'
     require 'ffi'
     extend FFI::Library
-    ffi_lib "rdf.so.0"
+    ffi_lib "rdf"
   else
+    # TODO: This might be outdated already, check with Rubinius
     extend FFI::Library
     ffi_lib "librdf.so.0"
   end
