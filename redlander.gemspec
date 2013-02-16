@@ -23,6 +23,6 @@ HERE
   gem.add_development_dependency("rspec", "~> 2")
 
   gem.license = "The MIT License (MIT)"
-  gem.extra_rdoc_files = ['README.rdoc', 'ChangeLog']
+  gem.extra_rdoc_files = ['README.md', 'ChangeLog']
   gem.has_rdoc = false
 end
