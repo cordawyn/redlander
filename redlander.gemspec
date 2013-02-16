@@ -17,9 +17,9 @@ HERE
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  # gem.add_dependency("librdf0", "~> 1.0.14")
+  # gem.add_dependency("librdf0", "~> 1.0.15")
   gem.add_dependency("xml_schema", "~> 0.1.3")
-  gem.add_dependency("ffi", "~> 1.1")
+  gem.add_dependency("ffi", "~> 1.3")
   gem.add_development_dependency("rspec", "~> 2")
 
   gem.license = "The MIT License (MIT)"

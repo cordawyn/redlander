@@ -1,3 +1,8 @@
+redlander (0.5.3)
+
+  * using crossplatform-compatible FFI (makes MacOSX happy)
+  * transaction block returns the result of block evaluation
+
 redlander (0.5.2)
 
   * UTF-8 output for Node#value
