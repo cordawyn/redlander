@@ -18,7 +18,7 @@ HERE
   gem.require_paths = ["lib"]
 
   # gem.add_dependency("librdf0", "~> 1.0.15")
-  gem.add_dependency("xml_schema", "~> 0.1.3")
+  gem.add_dependency("xml_schema", "~> 0.2.0")
   gem.add_dependency("ffi", "~> 1.3")
   gem.add_development_dependency("rspec", "~> 2")
 
