@@ -31,9 +31,11 @@ module Redlander
                   when URI
                     Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, arg.to_s)
                   else
-                    value = arg.respond_to?(:xmlschema) ? arg.xmlschema : arg.to_s
                     @datatype = XmlSchema.datatype_of(arg)
-                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, nil, Uri.new(@datatype).rdf_uri)
+                    value = arg.respond_to?(:xmlschema) ? arg.xmlschema : arg.to_s
+                    lang = arg.respond_to?(:lang) ? arg.lang.to_s : nil
+                    dt = lang ? nil : Uri.new(@datatype).rdf_uri
+                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, lang, dt)
                   end
       raise RedlandError, "Failed to create a new node" if @rdf_node.null?
       ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_node(@rdf_node) })
@@ -109,8 +111,14 @@ module Redlander
         Redland.librdf_node_get_blank_identifier(@rdf_node).force_encoding("UTF-8")
       else
         v = Redland.librdf_node_get_literal_value(@rdf_node).force_encoding("UTF-8")
+        v << "@#{lang}" if lang
         XmlSchema.instantiate(v, @datatype)
       end
+    end
+
+    def lang
+      lng = Redland.librdf_node_get_literal_value_language(@rdf_node)
+      lng ? lng.to_sym : nil
     end
 
 

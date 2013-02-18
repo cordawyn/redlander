@@ -92,6 +92,14 @@ describe Node do
       node.datatype.should eql URI("http://www.w3.org/2001/XMLSchema#dateTime")
     end
 
+    it "should be created from a localized string" do
+      node = Node.new(LocalizedString.new("bonjour", :fr))
+      node.should be_literal
+      node.value.should eql "bonjour"
+      node.value.lang.should eql :fr
+      node.lang.should eql :fr
+    end
+
     it "should have proper string representation" do
       node = Node.new("Bye-bye, cruel world...")
       node.to_s.should eql('"Bye-bye, cruel world..."^^<http://www.w3.org/2001/XMLSchema#string>')
