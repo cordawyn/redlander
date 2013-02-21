@@ -173,6 +173,11 @@ yields proper results in the block.
 Update your `redland` library to 1.0.15 or newer to fix this.
 
 
+SPARQL DESCRIBE is not implemented in librdf.
+
+> See [0000135](http://bugs.librdf.org/mantis/view.php?id=135) for a temporal workaround.
+
+
 # Authors and Contributors
 
 [Slava Kravchenko](https://github.com/cordawyn)
