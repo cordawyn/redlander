@@ -16,7 +16,7 @@ Note, that you will have to install Redland runtime library (librdf) for Redland
 # Usage
 
 This README outlines most obvious use cases.
-For more details please refer to YARD documentation of Redlander.
+For more details please refer to [YARD documentation of Redlander](http://rubydoc.info/gems/redlander).
 
 To start doing anything useful with Redlander, you need to initialize a model first:
 
