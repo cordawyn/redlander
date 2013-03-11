@@ -82,6 +82,16 @@ hash for *SELECT* queries. Binding hash values are instances of `Redlander::Node
 
 For query options and available query languages refer to `Model#query` documentation.
 
+### Localized string literals
+
+Localized string literals are instantiated as LocalizedString objects.
+Refer to the documentation and README file in `xml_schema` gem for details
+on LocalizedString.
+
+    $ m.statments.first(:object => "bonjour".with_lang(:fr))
+
+will return a first statement matching "bonjour@fr" literal as the object.
+
 
 ## Parsing Input
 
