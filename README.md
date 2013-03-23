@@ -195,4 +195,4 @@ SPARQL DESCRIBE is not implemented in librdf.
 
 # Thanks
 
-Thanks goes to Dave Beckett, the creator of Redland!
+Thanks goes to [Dave Beckett](https://github.com/dajobe), the creator of Redland!
