@@ -97,7 +97,7 @@ module Redland
   attach_function :librdf_query_get_limit, [:pointer], :int
   attach_function :librdf_query_set_limit, [:pointer, :int], :int
   attach_function :librdf_query_get_offset, [:pointer], :int
-  attach_function :librdf_query_set_limit, [:pointer, :int], :int
+  attach_function :librdf_query_set_offset, [:pointer, :int], :int
   attach_function :librdf_query_results_is_bindings, [:pointer], :int
   attach_function :librdf_query_results_is_boolean, [:pointer], :int
   attach_function :librdf_query_results_is_graph, [:pointer], :int
