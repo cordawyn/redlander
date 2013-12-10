@@ -1,3 +1,10 @@
+redlander (0.6.1)
+  * librdf_query_set_offset from low-level API is now available
+
+redlander (0.6.0)
+  * using xml_schema ~> 0.2.0
+  * localized string literals ("bonjour@fr")
+
 redlander (0.5.3)
 
   * using crossplatform-compatible FFI (makes MacOSX happy)
