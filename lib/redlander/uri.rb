@@ -5,6 +5,15 @@ module Redlander
     # @api private
     attr_reader :rdf_uri
 
+    class << self
+      private
+
+      # @api private
+      def finalize_uri(rdf_uri_ptr)
+        proc { Redland.librdf_free_uri(rdf_uri_ptr) }
+      end
+    end
+
     # Create Redlander::Uri
     #
     # @param [URI, String] source String or URI object to wrap into Uri.
@@ -20,7 +29,7 @@ module Redlander
                    raise NotImplementedError, "Cannot create Uri from '#{source.inspect}'"
                  end
       raise RedlandError, "Failed to create Uri from '#{source.inspect}'" if @rdf_uri.null?
-      ObjectSpace.define_finalizer(self, self.class.finalize(@rdf_uri))
+      ObjectSpace.define_finalizer(self, self.class.send(:finalize_uri, @rdf_uri))
     end
 
     def to_s
@@ -42,13 +51,6 @@ module Redlander
       else
         Redland.librdf_new_uri_from_uri(u)
       end
-    end
-
-    # @api private
-    def self.finalize(rdf_uri_ptr)
-      proc {
-        Redland.librdf_free_uri(rdf_uri_ptr)
-      }
     end
   end
 end

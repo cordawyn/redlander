@@ -18,7 +18,7 @@ module Redlander
       unless @rdf_world
         @rdf_world = Redland.librdf_new_world
         raise RedlandError, "Could not create a new RDF world" if @rdf_world.null?
-        ObjectSpace.define_finalizer(self, self.finalize(@rdf_world))
+        ObjectSpace.define_finalizer(self, finalize_world(@rdf_world))
         Redland.librdf_world_open(@rdf_world)
       end
       @rdf_world
@@ -47,11 +47,12 @@ module Redlander
       }.join(',')
     end
 
+
+    private
+
     # @api private
-    def finalize(rdf_world_ptr)
-      proc {
-        Redland.librdf_free_world(rdf_world_ptr)
-      }
+    def finalize_world(rdf_world_ptr)
+      proc { Redland.librdf_free_world(rdf_world_ptr) }
     end
   end
 end

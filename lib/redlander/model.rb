@@ -12,6 +12,19 @@ module Redlander
     # @api private
     attr_reader :rdf_model
 
+    class << self
+      private
+
+      # @api private
+      def finalize_storage(rdf_storage_ptr)
+        proc { Redland.librdf_free_storage(rdf_storage_ptr) }
+      end
+
+      def finalize_model(rdf_model_ptr)
+        proc { Redland.librdf_free_model(rdf_model_ptr) }
+      end
+    end
+
     # Create a new RDF model.
     # (For available storage options see http://librdf.org/docs/api/redland-storage-modules.html)
     #
@@ -50,11 +63,12 @@ module Redlander
                                                 storage_name.to_s,
                                                 Redlander.to_rdf_options(options))
       raise RedlandError, "Failed to initialize '#{storage_name}' storage (type: #{storage_type})" if @rdf_storage.null?
+      ObjectSpace.define_finalizer(self, self.class.send(:finalize_storage, @rdf_storage))
 
       @rdf_model = Redland.librdf_new_model(Redlander.rdf_world, @rdf_storage, "")
       raise RedlandError, "Failed to create a new model" if @rdf_model.null?
 
-      ObjectSpace.define_finalizer(self, self.class.finalize(@rdf_storage, @rdf_model))
+      ObjectSpace.define_finalizer(self, self.class.send(:finalize_model, @rdf_model))
     end
 
     # Statements contained in the model.
@@ -183,16 +197,6 @@ module Redlander
     # @return [true]
     def transaction_rollback!
       raise RedlandError, "Failed to rollback the latest transaction" unless transaction_rollback
-    end
-
-    private
-
-    # @api private
-    def self.finalize(rdf_storage_ptr, rdf_model_ptr)
-      proc {
-        Redland.librdf_free_storage(rdf_storage_ptr)
-        Redland.librdf_free_model(rdf_model_ptr)
-      }
     end
   end
 end

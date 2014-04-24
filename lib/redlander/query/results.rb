@@ -4,6 +4,15 @@ module Redlander
     class Results
       include Enumerable
 
+      class << self
+        private
+
+        # @api private
+        def finalize_query(rdf_query_ptr)
+          proc { Redland.librdf_free_query(rdf_query_ptr) }
+        end
+      end
+
       # (see Model#query)
       def initialize(q, options = {})
         language = options[:language] || "sparql10"
@@ -13,7 +22,7 @@ module Redlander
         @rdf_query = Redland.librdf_new_query(Redlander.rdf_world, language, language_uri, q, base_uri)
         raise RedlandError, "Failed to create a #{language.upcase} query from '#{q}'" if @rdf_query.null?
 
-        ObjectSpace.define_finalizer(self, self.class.finalize(@rdf_query))
+        ObjectSpace.define_finalizer(self, self.class.send(:finalize_query, @rdf_query))
       end
 
       def process(model)
@@ -76,6 +85,7 @@ module Redlander
         !Redland.librdf_query_results_is_syntax(@rdf_results).zero?
       end
 
+
       private
 
       def process_bindings
@@ -117,13 +127,6 @@ module Redlander
 
       def process_syntax
         raise NotImplementedError, "Don't know how to handle syntax type results"
-      end
-
-      # @api private
-      def self.finalize(rdf_query_ptr)
-        proc {
-          Redland.librdf_free_query(rdf_query_ptr)
-        }
       end
     end
   end
