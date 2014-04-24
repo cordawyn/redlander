@@ -38,7 +38,7 @@ module Redlander
                     Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, lang, dt)
                   end
       raise RedlandError, "Failed to create a new node" if @rdf_node.null?
-      ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_node(@rdf_node) })
+      ObjectSpace.define_finalizer(self, self.class.finalize(@rdf_node))
     end
 
     # Check whether the node is a resource (identified by a URI)
@@ -121,7 +121,6 @@ module Redlander
       lng ? lng.to_sym : nil
     end
 
-
     private
 
     # @api private
@@ -131,6 +130,16 @@ module Redlander
       else
         Redland.librdf_new_node_from_node(n)
       end
+    end
+
+    # @api private
+    def self.finalize(rdf_node_ptr)
+      proc {
+        valid_ptr = Redlander.librdf_node_is_resource(rdf_node_ptr) or
+          Redlander.librdf_node_is_literal(rdf_node_ptr) or
+          Redlander.librdf_node_is_blank(rdf_node_ptr)
+        Redland.librdf_free_node(rdf_node_ptr) if valid_ptr
+      }
     end
   end
 end

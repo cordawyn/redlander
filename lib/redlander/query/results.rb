@@ -13,7 +13,7 @@ module Redlander
         @rdf_query = Redland.librdf_new_query(Redlander.rdf_world, language, language_uri, q, base_uri)
         raise RedlandError, "Failed to create a #{language.upcase} query from '#{q}'" if @rdf_query.null?
 
-        ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_query(@rdf_query) })
+        ObjectSpace.define_finalizer(self, self.class.finalize(@rdf_query))
       end
 
       def process(model)
@@ -117,6 +117,13 @@ module Redlander
 
       def process_syntax
         raise NotImplementedError, "Don't know how to handle syntax type results"
+      end
+
+      # @api private
+      def self.finalize(rdf_query_ptr)
+        proc {
+          Redland.librdf_free_query(rdf_query_ptr)
+        }
       end
     end
   end

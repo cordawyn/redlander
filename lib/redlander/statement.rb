@@ -26,7 +26,7 @@ module Redlander
                          raise NotImplementedError, "Cannot create Statement from '#{source.inspect}'"
                        end
       raise RedlandError, "Failed to create a new statement" if @rdf_statement.null?
-      ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_statement(@rdf_statement) })
+      ObjectSpace.define_finalizer(self, self.class.finalize(@rdf_statement))
     end
 
     # Subject of the statment.
@@ -116,6 +116,13 @@ module Redlander
       else
         Node.new(source).rdf_node
       end
+    end
+
+    # @api private
+    def self.finalize(rdf_statement_ptr)
+      proc {
+        Redland.librdf_free_statement(rdf_statement_ptr)
+      }
     end
   end
 end

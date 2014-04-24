@@ -12,16 +12,18 @@ require 'redlander/statement'
 # Main Redlander namespace
 module Redlander
   class << self
+
     # @api private
     def rdf_world
       unless @rdf_world
         @rdf_world = Redland.librdf_new_world
         raise RedlandError, "Could not create a new RDF world" if @rdf_world.null?
-        ObjectSpace.define_finalizer(self, proc { Redland.librdf_free_world(@rdf_world) })
+        ObjectSpace.define_finalizer(self, self.finalize(@rdf_world))
         Redland.librdf_world_open(@rdf_world)
       end
       @rdf_world
     end
+
 
     # @api private
     # Convert options hash into a string for librdf.
@@ -43,6 +45,13 @@ module Redlander
                 end
         opts << "#{key}='#{value}'"
       }.join(',')
+    end
+
+    # @api private
+    def finalize(rdf_world_ptr)
+      proc {
+        Redland.librdf_free_world(rdf_world_ptr)
+      }
     end
   end
 end
