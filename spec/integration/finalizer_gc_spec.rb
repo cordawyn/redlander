@@ -67,10 +67,8 @@ describe "garbage collection" do
     GC.start
     expect(ObjectSpace.each_object(Model).count).to eq(0)
     expect(ObjectSpace.each_object(Statement).count).to eq(0)
-    expect(ObjectSpace.each_object(Node).count).to eq(0)
     expect(ObjectSpace.each_object(Query::Results).count).to eq(0)
   end
-
 
   private
 

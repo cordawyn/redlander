@@ -121,9 +121,9 @@ module Redlander
       when NilClass
         nil
       when Node
-        source.rdf_node
+        Redland.librdf_new_node_from_node(source.rdf_node)
       else
-        Node.new(source).rdf_node
+        Redland.librdf_new_node_from_node(Node.new(source).rdf_node)
       end
     end
   end
