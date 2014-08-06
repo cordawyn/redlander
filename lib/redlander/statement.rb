@@ -1,9 +1,6 @@
 module Redlander
   # RDF statement
   class Statement
-    # @api private
-    attr_reader :rdf_statement
-
     class << self
       private
 
@@ -11,6 +8,27 @@ module Redlander
       def finalize_statement(rdf_statement_ptr)
         proc { Redland.librdf_free_statement(rdf_statement_ptr) }
       end
+    end
+
+    # @api private
+    def rdf_statement
+      unless instance_variable_defined?(:@rdf_statement)
+        @rdf_statement = case @source
+                         when FFI::Pointer
+                           @source
+                         when Hash
+                           # Create a new statement from nodes
+                           s = rdf_node_from(@source[:subject])
+                           p = rdf_node_from(@source[:predicate])
+                           o = rdf_node_from(@source[:object])
+                           Redland.librdf_new_statement_from_nodes(Redlander.rdf_world, s, p, o)
+                         else
+                           raise NotImplementedError, "Cannot create Statement from '#{@source.inspect}'"
+                         end
+        raise RedlandError, "Failed to create a new statement" if @rdf_statement.null?
+        ObjectSpace.define_finalizer(self, self.class.send(:finalize_statement, @rdf_statement))
+      end
+      @rdf_statement
     end
 
     # Create an RDF statement.
@@ -22,44 +40,45 @@ module Redlander
     # @raise [NotImplementedError] if cannot create a Statement from the given source.
     # @raise [RedlandError] if it fails to create a Statement.
     def initialize(source = {})
-      @rdf_statement = case source
-                       when FFI::Pointer
-                         wrap(source)
-                       when Hash
-                         # Create a new statement from nodes
-                         s = rdf_node_from(source[:subject])
-                         p = rdf_node_from(source[:predicate])
-                         o = rdf_node_from(source[:object])
-                         Redland.librdf_new_statement_from_nodes(Redlander.rdf_world, s, p, o)
-                       else
-                         raise NotImplementedError, "Cannot create Statement from '#{source.inspect}'"
-                       end
-      raise RedlandError, "Failed to create a new statement" if @rdf_statement.null?
-      ObjectSpace.define_finalizer(self, self.class.send(:finalize_statement, @rdf_statement))
+      # If FFI::Pointer is passed, wrap it instantly,
+      # because it can be freed outside before it is used here.
+      @source = source.is_a?(FFI::Pointer) ? wrap(source) : source
     end
 
     # Subject of the statment.
     #
     # @return [Node, nil]
     def subject
-      rdf_node = Redland.librdf_statement_get_subject(@rdf_statement)
-      rdf_node.null? ? nil : Node.new(rdf_node)
+      if instance_variable_defined?(:@subject)
+        @subject
+      else
+        rdf_node = Redland.librdf_statement_get_subject(rdf_statement)
+        @subject = rdf_node.null? ? nil : Node.new(rdf_node)
+      end
     end
 
     # Predicate of the statement.
     #
     # @return [Node, nil]
     def predicate
-      rdf_node = Redland.librdf_statement_get_predicate(@rdf_statement)
-      rdf_node.null? ? nil : Node.new(rdf_node)
+      if instance_variable_defined?(:@predicate)
+        @predicate
+      else
+        rdf_node = Redland.librdf_statement_get_predicate(rdf_statement)
+        @predicate = rdf_node.null? ? nil : Node.new(rdf_node)
+      end
     end
 
     # Object of the statement.
     #
     # @return [Node, nil]
     def object
-      rdf_node = Redland.librdf_statement_get_object(@rdf_statement)
-      rdf_node.null? ? nil : Node.new(rdf_node)
+      if instance_variable_defined?(:@object)
+        @object
+      else
+        rdf_node = Redland.librdf_statement_get_object(rdf_statement)
+        @object = rdf_node.null? ? nil : Node.new(rdf_node)
+      end
     end
 
     # Set the subject of the statement
@@ -67,7 +86,8 @@ module Redlander
     # @param [Node, nil] node
     # @return [void]
     def subject=(node)
-      Redland.librdf_statement_set_subject(@rdf_statement, rdf_node_from(node))
+      Redland.librdf_statement_set_subject(rdf_statement, rdf_node_from(node))
+      @subject = node
     end
 
     # Set the predicate of the statement
@@ -75,7 +95,8 @@ module Redlander
     # @param [Node, nil] node
     # @return [void]
     def predicate=(node)
-      Redland.librdf_statement_set_predicate(@rdf_statement, rdf_node_from(node))
+      Redland.librdf_statement_set_predicate(rdf_statement, rdf_node_from(node))
+      @predicate = node
     end
 
     # Set the object of the statement
@@ -83,7 +104,8 @@ module Redlander
     # @param [Node, nil] node
     # @return [void]
     def object=(node)
-      Redland.librdf_statement_set_object(@rdf_statement, rdf_node_from(node))
+      Redland.librdf_statement_set_object(rdf_statement, rdf_node_from(node))
+      @object = node
     end
 
     def eql?(other_statement)
@@ -98,7 +120,7 @@ module Redlander
     end
 
     def to_s
-      Redland.librdf_statement_to_string(@rdf_statement)
+      Redland.librdf_statement_to_string(rdf_statement)
     end
 
 

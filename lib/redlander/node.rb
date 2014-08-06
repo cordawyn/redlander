@@ -1,18 +1,48 @@
 module Redlander
   # RDF node (usually, a part of an RDF statement)
   class Node
-    # @api private
-    attr_reader :rdf_node
-
-    # Datatype URI for the literal node, or nil
-    attr_reader :datatype
-
     class << self
       private
 
       # @api private
       def finalize_node(rdf_node_ptr)
         proc { Redland.librdf_free_node(rdf_node_ptr) }
+      end
+    end
+
+    # @api private
+    def rdf_node
+      unless instance_variable_defined?(:@rdf_node)
+        @rdf_node = case @arg
+                    when FFI::Pointer
+                      @arg
+                    when NilClass
+                      Redland.librdf_new_node_from_blank_identifier(Redlander.rdf_world, @options[:blank_id])
+                    when URI
+                      Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, @arg.to_s)
+                    else
+                      value = @arg.respond_to?(:xmlschema) ? @arg.xmlschema : @arg.to_s
+                      lang = @arg.respond_to?(:lang) ? @arg.lang.to_s : nil
+                      dt = lang ? nil : Uri.new(XmlSchema.datatype_of(@arg)).rdf_uri
+                      Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, lang, dt)
+                    end
+        raise RedlandError, "Failed to create a new node" if @rdf_node.null?
+        ObjectSpace.define_finalizer(self, self.class.send(:finalize_node, @rdf_node))
+      end
+      @rdf_node
+    end
+
+    # Datatype URI for the literal node, or nil
+    def datatype
+      if instance_variable_defined?(:@datatype)
+        @datatype
+      else
+        @datatype = if literal?
+                      rdf_uri = Redland.librdf_node_get_literal_value_datatype_uri(rdf_node)
+                      rdf_uri.null? ? XmlSchema.datatype_of("") : URI.parse(Redland.librdf_uri_to_string(rdf_uri))
+                    else
+                      nil
+                    end
       end
     end
 
@@ -28,47 +58,31 @@ module Redlander
     # @option options [String] :blank_id optional ID to use for a blank node.
     # @raise [RedlandError] if it fails to create a node from the given args.
     def initialize(arg = nil, options = {})
-      @rdf_node = case arg
-                  when FFI::Pointer
-                    unless Redland.librdf_node_is_literal(arg).zero?
-                      rdf_uri = Redland.librdf_node_get_literal_value_datatype_uri(arg)
-                      @datatype = rdf_uri.null? ? XmlSchema.datatype_of("") : URI(Redland.librdf_uri_to_string(rdf_uri))
-                    end
-                    wrap(arg)
-                  when NilClass
-                    Redland.librdf_new_node_from_blank_identifier(Redlander.rdf_world, options[:blank_id])
-                  when URI
-                    Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, arg.to_s)
-                  else
-                    @datatype = XmlSchema.datatype_of(arg)
-                    value = arg.respond_to?(:xmlschema) ? arg.xmlschema : arg.to_s
-                    lang = arg.respond_to?(:lang) ? arg.lang.to_s : nil
-                    dt = lang ? nil : Uri.new(@datatype).rdf_uri
-                    Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, lang, dt)
-                  end
-      raise RedlandError, "Failed to create a new node" if @rdf_node.null?
-      ObjectSpace.define_finalizer(self, self.class.send(:finalize_node, @rdf_node))
+      # If FFI::Pointer is passed, wrap it instantly,
+      # because it can be freed outside before it is used here.
+      @arg = arg.is_a?(FFI::Pointer) ? wrap(arg) : arg
+      @options = options
     end
 
     # Check whether the node is a resource (identified by a URI)
     #
     # @return [Boolean]
     def resource?
-      Redland.librdf_node_is_resource(@rdf_node) != 0
+      Redland.librdf_node_is_resource(rdf_node) != 0
     end
 
     # Return true if node is a literal.
     #
     # @return [Boolean]
     def literal?
-      Redland.librdf_node_is_literal(@rdf_node) != 0
+      Redland.librdf_node_is_literal(rdf_node) != 0
     end
 
     # Return true if node is a blank node.
     #
     # @return [Boolean]
     def blank?
-      Redland.librdf_node_is_blank(@rdf_node) != 0
+      Redland.librdf_node_is_blank(rdf_node) != 0
     end
 
     # Equivalency. Only works for comparing two Nodes.
@@ -76,7 +90,7 @@ module Redlander
     # @param [Node] other_node Node to be compared with.
     # @return [Boolean]
     def eql?(other_node)
-      Redland.librdf_node_equals(@rdf_node, other_node.rdf_node) != 0
+      Redland.librdf_node_equals(rdf_node, other_node.rdf_node) != 0
     end
     alias_method :==, :eql?
 
@@ -88,7 +102,7 @@ module Redlander
     #
     # @return [String]
     def to_s
-      Redland.librdf_node_to_string(@rdf_node)
+      Redland.librdf_node_to_string(rdf_node)
     end
 
     # Internal URI of the Node.
@@ -99,7 +113,7 @@ module Redlander
     # @return [URI, nil]
     def uri
       if resource?
-        URI(to_s[1..-2])
+        URI.parse(to_s[1..-2])
       elsif literal?
         datatype
       else
@@ -117,16 +131,16 @@ module Redlander
       if resource?
         uri
       elsif blank?
-        Redland.librdf_node_get_blank_identifier(@rdf_node).force_encoding("UTF-8")
+        Redland.librdf_node_get_blank_identifier(rdf_node).force_encoding("UTF-8")
       else
-        v = Redland.librdf_node_get_literal_value(@rdf_node).force_encoding("UTF-8")
+        v = Redland.librdf_node_get_literal_value(rdf_node).force_encoding("UTF-8")
         v << "@#{lang}" if lang
-        XmlSchema.instantiate(v, @datatype)
+        XmlSchema.instantiate(v, datatype)
       end
     end
 
     def lang
-      lng = Redland.librdf_node_get_literal_value_language(@rdf_node)
+      lng = Redland.librdf_node_get_literal_value_language(rdf_node)
       lng ? lng.to_sym : nil
     end
 
