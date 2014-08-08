@@ -5,6 +5,7 @@ which is used to manipulate RDF graphs. This is an alternative implementation
 of Ruby bindings (as opposed to the official bindings), aiming to be more
 intuitive, lightweight, high-performing and as bug-free as possible.
 
+
 # Installing
 
 Installing Redlander is simple:
@@ -12,6 +13,7 @@ Installing Redlander is simple:
     $ gem install redlander
 
 Note, that you will have to install Redland runtime library (librdf) for Redlander to work.
+
 
 # Usage
 
@@ -28,6 +30,7 @@ like `:user` or `:password`. Look-up the options for `Model.initialize`
 for the list of available options.
 Naturally, you don't need to create a model if you just want to play around
 with independent statements, nodes and the like.
+
 
 ## RDF Statements
 
@@ -52,7 +55,8 @@ The API is almost identical to [ActiveRecord](https://github.com/rails/rails/tre
 
     $ m.statements.each { |st| puts st }
 
-Finding statements:
+
+### Finding and enumerating statements
 
     $ m.statements.find(:first, :object => "subject!")
     $ m.statements.all(:object => "another label")
@@ -60,7 +64,20 @@ Finding statements:
         puts statement.subject
       }
 
-Note that `m.statements.each` is "lazy", while `m.statements.all` (and other finders) is not.
+Note that `m.statements.each` does not have to pull and instantiate all statements in one call,
+while `m.statements.all` (and other finders) can potentially create huge arrays of data
+before you can handle individual statements of it.
+
+For those interested in laziness, `m.statements` has `lazy` method which works exactly as users of
+Ruby 2+ would expect:
+
+    $ m.statements.lazy.each {|s| puts s.object }
+
+This, and other similar features are inherited by `m.statements` (which is actually an instance of
+`Redlander::ModelProxy`) from `Enumerable` module.
+
+
+### Accessing and querying subject, predicate and object
 
 You can access the subject, predicate or object of a statement:
 
@@ -81,6 +98,7 @@ yields the statements constructed by *CONSTRUCT* queries and yields the binding
 hash for *SELECT* queries. Binding hash values are instances of `Redlander::Node`.
 
 For query options and available query languages refer to `Model#query` documentation.
+
 
 ### Localized string literals
 
