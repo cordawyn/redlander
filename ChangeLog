@@ -1,3 +1,7 @@
+redlander (0.6.2)
+  * fixed a few memory (double-freeing) issues
+  * memoizing the accessors for Statement, Node and Uri
+
 redlander (0.6.1)
   * librdf_query_set_offset from low-level API is now available
 

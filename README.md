@@ -209,6 +209,7 @@ SPARQL DESCRIBE is not implemented in librdf.
 # Authors and Contributors
 
 [Slava Kravchenko](https://github.com/cordawyn)
+[Anthony Bargnesi](https://github.com/abargnesi)
 
 
 # Thanks
