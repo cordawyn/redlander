@@ -100,6 +100,26 @@ hash for *SELECT* queries. Binding hash values are instances of `Redlander::Node
 For query options and available query languages refer to `Model#query` documentation.
 
 
+### Notes on Nodes
+
+For detailed information about creating and working with individual nodes
+refer to `Redlander::Node` documentation. We just highlight a few gotchas
+and tips here.
+
+To create a blank node, just do `Node.new` (or `Node.new(nil)`). This produces
+a blank node with a random unique identifier, as documented in `librdf` API.
+To produce a blank node with a user-defined id, add `:blank_id` option:
+`Node.new(:blank_id => "my-blank-node-1")`.
+
+It is sometimes not convenient to create resource nodes from the instances
+of URI -- you can be given just a simple list of URIs in text format.
+Converting them all into Ruby URI objects, then feeding them to `Node.new`
+doesn't make much sense if you are not going to reuse those Ruby URI objects.
+In such cases you can use `:resource` option to create resource nodes directly
+from strings (that would otherwise be interpreted as string literals):
+`Node.new("http://example.org/thing/1", :resource => true)`.
+
+
 ### Localized string literals
 
 Localized string literals are instantiated as LocalizedString objects.

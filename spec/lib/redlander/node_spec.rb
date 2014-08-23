@@ -36,8 +36,13 @@ describe Node do
       Node.new(resource_uri).should be_resource
     end
 
+    it "should create a resource node with :resource => true option" do
+      n1 = Node.new("http://example.com/nodes#node_1", :resource => true)
+      expect(n1).to be_resource
+    end
+
     it "should have an instance of URI for a resource node" do
-      resource_uri = URI('http://example.com/nodes#node_1')
+      resource_uri = URI.parse('http://example.com/nodes#node_1')
       Node.new(resource_uri).value.should be_an_instance_of(URI::HTTP)
     end
   end

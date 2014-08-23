@@ -21,10 +21,14 @@ module Redlander
                     when URI
                       Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, @arg.to_s)
                     else
-                      value = @arg.respond_to?(:xmlschema) ? @arg.xmlschema : @arg.to_s
-                      lang = @arg.respond_to?(:lang) ? @arg.lang.to_s : nil
-                      dt = lang ? nil : Uri.new(XmlSchema.datatype_of(@arg)).rdf_uri
-                      Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, lang, dt)
+                      if @options[:resource]
+                        Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, @arg.to_s)
+                      else
+                        value = @arg.respond_to?(:xmlschema) ? @arg.xmlschema : @arg.to_s
+                        lang = @arg.respond_to?(:lang) ? @arg.lang.to_s : nil
+                        dt = lang ? nil : Uri.new(XmlSchema.datatype_of(@arg)).rdf_uri
+                        Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, value, lang, dt)
+                      end
                     end
         raise RedlandError, "Failed to create a new node" if @rdf_node.null?
         ObjectSpace.define_finalizer(self, self.class.send(:finalize_node, @rdf_node))
@@ -49,13 +53,13 @@ module Redlander
     # Create a RDF node.
     #
     # @param [Any] arg
-    #   - an instance of URI - to create a RDF "resource",
-    #     Note that you cannot create a resource node from an URI string,
-    #     it must be an instance of URI. Otherwise it is treated as a string literal.
+    #   - an instance of URI - to create an RDF "resource",
+    #     see also :resource option below.
     #   - nil (or absent) - to create a blank node,
     #   - any other Ruby object, which can be coerced into a literal.
     # @param [Hash] options
     # @option options [String] :blank_id optional ID to use for a blank node.
+    # @option options [Boolean] :resource interpret arg as URI string and create an RDF "resource".
     # @raise [RedlandError] if it fails to create a node from the given args.
     def initialize(arg = nil, options = {})
       # If FFI::Pointer is passed, wrap it instantly,
